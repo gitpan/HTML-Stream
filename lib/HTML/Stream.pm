@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.45 $, 10;
+$VERSION = substr q$Revision: 1.47 $, 10;
 
 
 
@@ -1445,24 +1445,32 @@ the typo in approach #4?  C<;-)>
 (BTW, thanks to Benchmark:: for allowing me to... er... benchmark stuff.)
 
 
-=head1 WHY IN THE WORLD DID I WRITE THIS?
 
-I was just mucking about with different ways of generating large
-HTML documents, seeing which ways I liked the most/least.
+=head1 VERSION
+
+$Id: Stream.pm,v 1.47 2000/06/10 22:00:25 eryq Exp $
 
 
 =head1 CHANGE LOG
 
 =over 4
 
+
+=item Version 1.47
+
+No real changes to code; just improved documentation.
+
+
 =item Version 1.45
 
 Cleanup for Perl 5.005: removed duplicate typeglob assignments.
+
 
 =item Version 1.44
 
 Win95 install (5.004) now works.
 Added SYNOPSIS to POD.
+
 
 =item Version 1.41
 
@@ -1535,11 +1543,6 @@ I<Thanks to John D Groenveld for the bug report and the patch.>
 Start of history.
 
 =back
-
-
-=head1 VERSION
-
-$Revision: 1.45 $
 
 
 =head1 ACKNOWLEDGEMENTS
