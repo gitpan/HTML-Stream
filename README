@@ -1,76 +1,61 @@
 NAME
-
     HTML::Stream - HTML output stream class, and some markup utilities
 
 DESCRIPTION
+    The HTML::Stream module provides you with an object-oriented (and
+    subclassable) way of outputting HTML. Basically, you open up an "HTML
+    stream" on an existing filehandle, and then do all of your output to the
+    HTML stream. You can intermix HTML-stream-output and ordinary-print-
+    output, if you like.
 
-    The HTML::Stream Perl5 module provides you with an object-oriented 
-    (and subclassable) way of outputting HTML.  Basically, you open up 
-    an "HTML stream" on an existing filehandle, and then do all of your 
-    output to the HTML stream.  You can intermix HTML-stream-output and 
-    ordinary-print-output, if you like.
+    Here's small sample of some of the non-OO ways you can use this module:
 
-    Here's small sample of the different ways you can use this module:
+          use HTML::Stream qw(:funcs);
 
-        use HTML::Stream qw(:funcs);
-        $HTML = new HTML::Stream \*STDOUT;
-      
-        # The vanilla interface...
-        $HTML->tag('A', HREF=>"$href");
-        $HTML->tag('IMG', SRC=>"logo.gif", ALT=>"LOGO");
-        $HTML->text($caption);
-        $HTML->tag('_A');
-             
-        # The chocolate interface (with whipped cream)...
-        $HTML -> A(HREF=>"$href")
-              -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
-              -> t($caption)
-              -> _A;
-       
-        # The strawberry interface...
-        output $HTML [A, HREF=>"$href"], 
-                     [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
-                     $caption,
-                     [_A];
-
-    Please see the HTML::Stream module for full details.
-
-KIT CONTAINS
-
-    HTML::Stream
-	The Perl module itself.
-
-    html2perlstream	(in the ./bin directory)
-	New! A Perl program for generating HTML::Stream code from HTML.
-	You give the HTML you want to generate, and it spits out a .pl
-	file.
-  
-REQUIREMENTS AND INSTALLATION
-
-    HTML::Stream
-        None for basic functionality, although you will need HTML::Entities
-        if you want to do some of the fancier Latin-1 escaping/unescaping.
-	
-    html2perlstream
-	You'll need to have HTML::Parser (and anything it depends on, probably
-        HTML::Entities) installed.  
-
-  * POSSIBLY-OLD COPIES OF HTML::Entities AND HTML::Parser HAVE BEEN PLACED
-    IN THE ./etc DIRECTORY FOR YOUR CONVENIENCE.  However, they will *not*
-    be installed during this toolkit's installation process, and I STRONGLY
-    urge you to get fresh, up-to-date copies from the CPAN 
-    (http://www.perl.com/perl).
+          print html_tag('A', HREF=>$link);     
+          print html_escape("<<Hello & welcome!>>");      
 
 
-WHERE TO GET IT
+    And some of the OO ways as well:
 
-    Any CPAN site, in directory authors/Eryq.
-    Go to http://www.perl.com/perl for details.
+          use HTML::Stream;
+          $HTML = new HTML::Stream \*STDOUT;
+
+          # The vanilla interface...
+          $HTML->tag('A', HREF=>"$href");
+          $HTML->tag('IMG', SRC=>"logo.gif", ALT=>"LOGO");
+          $HTML->text($copyright);
+          $HTML->tag('_A');
+
+          # The chocolate interface...
+          $HTML -> A(HREF=>"$href");
+          $HTML -> IMG(SRC=>"logo.gif", ALT=>"LOGO");
+          $HTML -> t($caption);
+          $HTML -> _A;
+
+          # The chocolate interface, with whipped cream...
+          $HTML -> A(HREF=>"$href")
+                -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
+                -> t($caption)
+                -> _A;
+
+          # The strawberry interface...
+          output $HTML [A, HREF=>"$href"], 
+                       [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
+                       $caption,
+                       [_A];
+
+
+    There's even a small built-in subclass, HTML::Stream::Latin1, which can
+    handle Latin-1 input right out of the box. But all in good time...
+
+CHANGES
+  Version 1.37
+
+    No real change; just trying to make CPAN.pm happier.
 
 AUTHOR
+    Eryq, eryq@enteract.com or eryq@rhine.gsfc.nasa.gov or thereabouts.
 
-    Eryq, 11 Jan 1997
-    eryq@enteract.com  
-   
-
+    Enjoy.
 

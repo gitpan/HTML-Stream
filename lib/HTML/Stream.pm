@@ -378,7 +378,7 @@ You say you want to print to a string?  For kicks and giggles, try this:
     
     my $SH = new StringHandle;
     my $HTML = new HTML::Stream $SH;
-    $HTML -> H1 -> "<Hello & welcome!>" -> _H1;
+    $HTML -> H1 -> t("Hello & <<welcome>>!") -> _H1;
     print "PRINTED STRING: ", $$SH, "\n";
 
 
@@ -427,9 +427,9 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 );
 Exporter::export_ok_tags('funcs');
 
-# Version...
-( $VERSION ) = '$Revision: 1.38 $ ' =~ /\$Revision:\s+([^\s]+)/;
-         
+# The package version, both in 1.23 style *and* usable by MakeMaker:
+$VERSION = substr q$Revision: 1.40 $, 10;
+
 
 
 #------------------------------------------------------------
@@ -1518,7 +1518,7 @@ Start of history.
 
 =head1 VERSION
 
-$Revision: 1.38 $
+$Revision: 1.40 $
 
 
 =head1 ACKNOWLEDGEMENTS

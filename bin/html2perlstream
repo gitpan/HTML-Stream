@@ -13,7 +13,7 @@ html2perlstream - convert an HTML document to Perl code for that document
 =head1 DESCRIPTION
 
 Takes an HTML file, and produces from it a Perl script that will
-generate that HTML using the HTML::Stream module.
+generate that HTML using the L<HTML::Stream> module.
 
 For usage, just say:
 
@@ -60,7 +60,7 @@ needed; e.g., if we are inside a C<PRE> environment.
 
 =head1 VERSION
 
-$Id: html2perlstream,v 1.7 1997/02/25 04:53:35 eryq Exp $
+$Id: html2perlstream,v 1.8 1997/02/25 05:03:21 eryq Exp $
 
 
 =head1 AUTHOR
@@ -96,7 +96,7 @@ use vars qw($VERSION
 #------------------------------------------------------------
 
 # Version...
-( $VERSION ) = '$Revision: 1.7 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.8 $ ' =~ /\$Revision:\s+([^\s]+)/;
 
 # Escape-map:
 my %PerlUnescape = (
