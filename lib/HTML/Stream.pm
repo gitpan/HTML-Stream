@@ -428,15 +428,15 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.40 $, 10;
+$VERSION = substr q$Revision: 1.42 $, 10;
 
 
 
-#------------------------------------------------------------
+#------------------------------
 #
 # GLOBALS
 #
-#------------------------------------------------------------
+#------------------------------
 
 # Allow dashes to become slashes?
 $DASH_TO_SLASH = 1;
@@ -456,15 +456,15 @@ my $F_NEWLINE = 0x01;      # is autonewlining allowed?
 
 
 
-#------------------------------------------------------------
+#------------------------------
 #
 # PRIVATE UTILITIES
 #
-#------------------------------------------------------------
+#------------------------------
 
-#------------------------------------------------------------
+#------------------------------
 # escape_all TEXT
-#------------------------------------------------------------
+#
 # Given a TEXT string, turn the text into valid HTML by interpolating the 
 # appropriate escape sequences for all troublesome characters
 # (angles, double-quotes, ampersands, and 8-bit characters).
@@ -473,14 +473,14 @@ my $F_NEWLINE = 0x01;      # is autonewlining allowed?
 
 sub escape_all {
     my $text = shift;
-    $text =~ s/[<>"&]/\&$Escape{$&};/mg; 
-    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
+    $text =~ s/([<>"&])/\&$Escape{$1};/mg; 
+    $text =~ s/([\x80-\xFF])/'&#'.unpack('C',$1).';'/eg;
     $text;
 }
 
-#------------------------------------------------------------
+#------------------------------
 # escape_latin_1 TEXT
-#------------------------------------------------------------
+#
 # Given a TEXT string, turn the text into valid HTML by interpolating the 
 # appropriate escape sequences for all troublesome characters
 # (angles, double-quotes, ampersands, and 8-bit characters).
@@ -493,32 +493,32 @@ sub escape_latin_1 {
     $text;
 }
 
-#------------------------------------------------------------
+#------------------------------
 # escape_non_ent TEXT
-#------------------------------------------------------------
+#
 # Given a TEXT string, turn the text into valid HTML by interpolating the 
 # appropriate escape sequences for angles, double-quotes, and 8-bit
 # characters only (i.e., ampersands are left alone).
 
 sub escape_non_ent {
     my $text = shift;
-    $text =~ s/[<>"]/\&$Escape{$&};/mg; 
-    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
+    $text =~ s/([<>"])/\&$Escape{$1};/mg; 
+    $text =~ s/([\x80-\xFF])/'&#'.unpack('C',$1).';'/eg;
     $text;
 }
 
-#------------------------------------------------------------
+#------------------------------
 # escape_none TEXT
-#------------------------------------------------------------
+#
 # No-op, provided for very simple compatibility.  Just returns TEXT.
 
 sub escape_none {
     $_[0];
 }
 
-#------------------------------------------------------------
+#------------------------------
 # build_tag ESCAPEFUNC, \@TAGINFO
-#------------------------------------------------------------
+#
 # I<Internal use only!>  Build an HTML tag using the given ESCAPEFUNC.
 # As an efficiency hack, only the values are HTML-escaped currently:
 # it is assumed that the tag and parameters will already be safe.
@@ -543,7 +543,7 @@ sub build_tag {
 }
 
 
-#------------------------------------------------------------
+#------------------------------
 
 
 
@@ -553,12 +553,10 @@ sub build_tag {
 
 =cut
 
-#------------------------------------------------------------
+#------------------------------
 
 
-#------------------------------------------------------------
-# html_escape
-#------------------------------------------------------------
+#------------------------------
 
 =item html_escape TEXT
 
@@ -575,14 +573,12 @@ function instead.
 
 sub html_escape {
     my $text = shift;
-    $text =~ s/[<>"&]/\&$Escape{$&};/mg; 
-    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
+    $text =~ s/([<>"&])/\&$Escape{$1};/mg; 
+    $text =~ s/([\x80-\xFF])/'&#'.unpack('C',$1).';'/eg;
     $text;
 }
  
-#------------------------------------------------------------
-# html_tag
-#------------------------------------------------------------
+#------------------------------
 
 =item html_tag TAG [, PARAM=>VALUE, ...]
 
@@ -599,9 +595,7 @@ sub html_tag {
     build_tag(\&html_escape, \@_);    # warning! using ref to @_!
 }
 
-#------------------------------------------------------------
-# html_unescape TEXT
-#------------------------------------------------------------
+#------------------------------
 
 =item html_unescape TEXT
 
@@ -625,9 +619,7 @@ sub html_unescape {
     return $text;
 }
 
-#------------------------------------------------------------
-# html_unmarkup TEXT
-#------------------------------------------------------------
+#------------------------------
 
 =item html_unmarkup TEXT
 
@@ -648,7 +640,7 @@ sub html_unmarkup {
 
 
 
-#------------------------------------------------------------
+#------------------------------
 
 =back
 
@@ -658,7 +650,7 @@ sub html_unmarkup {
 
 =cut
 
-#------------------------------------------------------------
+#------------------------------
 
 # Special mapping from names to utility functions (more stable than symtable):
 my %AutoEscapeSubs = 
@@ -668,9 +660,7 @@ my %AutoEscapeSubs =
      );
 
 
-#------------------------------------------------------------
-# new 
-#------------------------------------------------------------
+#------------------------------
 
 =item new [PRINTABLE] 
 
@@ -702,16 +692,16 @@ sub new {
     bless $self, $class;
 }
 
-#------------------------------------------------------------
+#------------------------------
 # DESTROY
-#------------------------------------------------------------
+#
 # Destructor.  Does I<not> close the filehandle!
 
 sub DESTROY { 1 }
 
-#------------------------------------------------------------
+#------------------------------
 # autoescape - DEPRECATED as of 1.31 due to bad name choice
-#------------------------------------------------------------
+#
 sub autoescape {
     my $self = shift;
     warn "HTML::Stream's autoescape() method is deprecated.\n",
@@ -719,9 +709,7 @@ sub autoescape {
     $self->auto_escape(@_);
 }
 
-#------------------------------------------------------------
-# auto_escape
-#------------------------------------------------------------
+#------------------------------
 
 =item auto_escape [NAME|SUBREF]
 
@@ -801,9 +789,7 @@ sub auto_escape {
     $oldesc;
 }
 
-#------------------------------------------------------------
-# auto_format
-#------------------------------------------------------------
+#------------------------------
 
 =item auto_format ONOFF
 
@@ -823,9 +809,7 @@ sub auto_format {
     $self;
 }
 
-#------------------------------------------------------------
-# comment
-#------------------------------------------------------------
+#------------------------------
 
 =item comment COMMENT
 
@@ -841,9 +825,7 @@ sub comment {
     $self;
 }
 
-#------------------------------------------------------------
-# ent
-#------------------------------------------------------------
+#------------------------------
 
 =item ent ENTITY
 
@@ -868,12 +850,11 @@ sub ent {
 }
 
 # Make a synonym:
+*e = undef;            # prevents "name only used once" warnings
 *e = \&ent;
 
 
-#------------------------------------------------------------
-# io
-#------------------------------------------------------------
+#------------------------------
 
 =item io
 
@@ -890,9 +871,7 @@ sub io {
 }
 
 
-#------------------------------------------------------------
-# nl 
-#------------------------------------------------------------
+#------------------------------
 
 =item nl [COUNT]
 
@@ -907,9 +886,7 @@ sub nl {
     $self;
 }
 
-#------------------------------------------------------------
-# tag 
-#------------------------------------------------------------
+#------------------------------
 
 =item tag TAGNAME [, PARAM=>VALUE, ...]
 
@@ -925,17 +902,16 @@ sub tag {
     $self;
 }
 
-#------------------------------------------------------------
-# text
-#------------------------------------------------------------
+#------------------------------
 
-=item text TEXT, ..., TEXT
+=item text TEXT...
 
 I<Instance method.>
-Output some text. Returns the self object, to allow method chaining.
-You may abbreviate this method name as C<t>:
+Output some text.  You may abbreviate this method name as C<t>:
 
       $html->t('Hi there, ', $yournamehere, '!');
+
+Returns the self object, to allow method chaining.
 
 =cut
 
@@ -946,10 +922,36 @@ sub text {
 }
 
 # Make a synonym:
+*t = undef;            # prevents "name only used once" warnings
 *t = \&text;
 
+#------------------------------
 
-#------------------------------------------------------------
+=item text_nbsp TEXT...
+
+I<Instance method.>
+Output some text, but with all spaces output as non-breaking-space
+characters: 
+
+      $html->t("To list your home directory, type: ")
+           ->text_nbsp("ls -l ~yourname.")
+
+Returns the self object, to allow method chaining.
+
+=cut
+
+sub text_nbsp {
+    my $self = shift;
+    my $txt = &{$self->{Esc}}(join('',@_));
+    $txt =~ s/ /&nbsp;/g;
+    $self->{OUT}->print($txt);
+    $self;
+}
+*nbsp_text = undef;            # prevents "name only used once" warnings
+*nbsp_text = \&text_nbsp;      # deprecated, but supplied for John :-)
+
+
+#------------------------------
 
 =back
 
@@ -959,11 +961,9 @@ sub text {
 
 =cut
 
-#------------------------------------------------------------
+#------------------------------
 
-#------------------------------------------------------------
-# output
-#------------------------------------------------------------
+#------------------------------
 
 =item output ITEM,...,ITEM
 
@@ -995,7 +995,7 @@ sub output {
 }
 
 
-#------------------------------------------------------------
+#------------------------------
 
 =back
 
@@ -1005,11 +1005,11 @@ sub output {
 
 =cut
 
-#------------------------------------------------------------
+#------------------------------
 
-#------------------------------------------------------------
+#------------------------------
 # %Tags
-#------------------------------------------------------------
+#------------------------------
 # The default known HTML tags.  The value if each is CURRENTLY a set of flags:
 #
 #     0x01    newline before <TAG>
@@ -1025,7 +1025,7 @@ my $TFONT  = 0 | 0 | 0 | 0;  # fontlike
 my $TOUTER = 1 | 0 | 0 | 8;
 my $TBOTH  = 0 | 2 | 0 | 8;
 my $TLIST  = 0 | 2 | 0 | 8;
-my $TELEM  = 0 | 0 | 0 | 0; 
+my $TELEM  = 0 | 0 | 0 | 8; 
 my $TTITLE = 0 | 0 | 0 | 8;
 my $TSOLO  = 0 | 2 | 0 | 0;
 
@@ -1067,9 +1067,10 @@ my $TSOLO  = 0 | 2 | 0 | 0;
      META    => $TSOLO,
      OBJECT  => 0,
      OL      => $TLIST, 
+     OPTION  => $TELEM, 
      P       => $TP,
      PRE     => $TOUTER,
-     SELECT  => 0,
+     SELECT  => $TBOTH,
      SMALL   => 0,
      STRONG  => 0,
      SUB     => 0,
@@ -1087,9 +1088,7 @@ my $TSOLO  = 0 | 2 | 0 | 0;
      );
 
 
-#------------------------------------------------------------
-# accept_tag 
-#------------------------------------------------------------
+#------------------------------
 
 =item accept_tag TAG
 
@@ -1122,9 +1121,7 @@ sub accept_tag {
 }
 
 
-#------------------------------------------------------------
-# private_tags
-#------------------------------------------------------------
+#------------------------------
 
 =item private_tags 
 
@@ -1161,9 +1158,7 @@ sub private_tags {
     $self;
 }
 
-#------------------------------------------------------------
-# set_tag 
-#------------------------------------------------------------
+#------------------------------
 
 =item set_tag TAG, [TAGINFO...]
 
@@ -1253,9 +1248,7 @@ sub set_tag {
     $self;
 }
 
-#------------------------------------------------------------
-# tags
-#------------------------------------------------------------
+#------------------------------
 
 =item tags 
 
@@ -1271,9 +1264,9 @@ sub tags {
 }
 
 
-#------------------------------------------------------------
+#------------------------------
 # AUTOLOAD
-#------------------------------------------------------------
+#
 # The custom autoloader, for the chocolate interface.
 #
 # B<WARNING:> I have no idea if the mechanism I use to put the
@@ -1403,6 +1396,9 @@ sub new {
     bless $self, $class;
 }
 
+
+__END__
+
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -1463,6 +1459,27 @@ HTML documents, seeing which ways I liked the most/least.
 
 =over 4
 
+
+=item Version 1.41
+
+Removed $& for efficiency.
+I<Thanks, Andreas!>
+
+Added support for OPTION, and default now puts newlines after SELECT 
+and /SELECT.  Also altered "TELEM" syntax to put newline after end-tags 
+of list element tags (like /OPTION, /LI, etc.).  In theory, this change
+could produce undesireable results for folks who embed lists inside of PRE 
+environments... however, that kind of stuff was done in the days before 
+TABLEs; also, you can always turn it off if you really need to.
+I<Thanks to John D Groenveld for these patches.>
+
+Added text_nbsp().
+I<Thanks to John D Groenveld for the patch.>
+This method may also be invoked as nbsp_text() as in the original patch, 
+but that's sort of a private tip-of-the-hat to the patch author, and the 
+synonym may go away in the future.
+
+
 =item Version 1.37
 
 No real change; just trying to make CPAN.pm happier.
@@ -1518,7 +1535,7 @@ Start of history.
 
 =head1 VERSION
 
-$Revision: 1.40 $
+$Revision: 1.42 $
 
 
 =head1 ACKNOWLEDGEMENTS
@@ -1534,12 +1551,13 @@ Warmest thanks to...
 
 =head1 AUTHOR
 
-Eryq, F<eryq@enteract.com> or F<eryq@rhine.gsfc.nasa.gov> or thereabouts.
+Eryq, F<eryq@zeegee.com>.
+President, Zero G Inc. (F<http://www.zeegee.com>).
 
 Enjoy.
 
 =cut
 
-#------------------------------------------------------------
+#------------------------------
 1;
 
