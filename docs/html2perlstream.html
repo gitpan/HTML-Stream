@@ -3,8 +3,8 @@
   <TITLE>html2perlstream</TITLE>
 </HEAD>
 <BODY 
-       bgcolor="#FFFFFF" link="#BE1B58" vlink="#8C337C" alink="#F28EAA">
-<A HREF="http://www.zeegee.com" TARGET="_top"><IMG SRC="icons/zeegee.gif" ALT="ZeeGee Software" ALIGN="RIGHT" BORDER="0"></A><A NAME="__TOP__"><H1>html2perlstream</H1>
+       bgcolor="#FFFFFF" link="#CC3366" vlink="#993366" alink="#FF6666">
+<FONT FACE="sans-serif" SIZE=-1><A HREF="http://www.zeegee.com" TARGET="_top"><IMG SRC="icons/zeegee.gif" ALT="ZeeGee Software" ALIGN="RIGHT" BORDER="0"></A><A NAME="__TOP__"><H1>html2perlstream</H1>
 </A><UL>
 <LI> <A HREF="#NAME">NAME</A>
 <LI> <A HREF="#SYNOPSIS">SYNOPSIS</A>
@@ -26,11 +26,11 @@
 <P><HR>
 <A NAME="SYNOPSIS"><H2><A HREF="#__TOP__"><IMG SRC="icons/h1bullet.gif" ALT="Top" BORDER="0"></A> SYNOPSIS</H2></A>
 
-<PRE>
+<FONT SIZE=3 FACE="courier"><PRE>
     html2perlstream
     html2perlstream [options] -
     html2perlstream [options] file.html .. file.html
-</PRE>
+</PRE></FONT>
 
 
 <P><HR>
@@ -43,31 +43,31 @@ generate that HTML using the <A HREF="HTML/Stream.pm.html">HTML::Stream</A> modu
 
 <P>For usage, just say:
 
-<PRE>
+<FONT SIZE=3 FACE="courier"><PRE>
     html2perlstream
-</PRE>
+</PRE></FONT>
 
 <P>The normal form is:
 
-<PRE>
+<FONT SIZE=3 FACE="courier"><PRE>
     html2perlstream [-options] [files]
-</PRE>
+</PRE></FONT>
 
 <P>Any named HTML input file <I><FILE>file.html</FILE></I> will cause output script 
 <I><FILE>file.html.pl</FILE></I> to be generated.  To read from the standard input,
 specify '-', like this:
 
-<PRE>
+<FONT SIZE=3 FACE="courier"><PRE>
     html2perlstream - &lt; test.html
-</PRE>
+</PRE></FONT>
 
 <P>If reading from the standard input, the output Perl code goes to the 
 standard output.  So if you want to run it right away to see the output, 
 just do this:
 
-<PRE>
+<FONT SIZE=3 FACE="courier"><PRE>
     html2perlstream - &lt; test.html | perl
-</PRE>
+</PRE></FONT>
 
 
 <P><HR>
@@ -82,9 +82,9 @@ Automatically load and run the output Perl file, then do a diff on
 that and the input file (you must input from a file and output to a
 file in order to use this).
 
-<PRE>
+<FONT SIZE=3 FACE="courier"><PRE>
     html2perlstream -w -d testin/test.html
-</PRE>
+</PRE></FONT>
 
 <P>You'll get fewer differences if you build the code with <CODE>-w</CODE>.
 
@@ -118,7 +118,7 @@ that I write a tool like this.
 
 <P><HR>
 <ADDRESS><FONT SIZE=-1>
-Generated Tue Jun 13 00:31:58 2000 by cvu_pod2html
+Generated Thu Aug 17 01:22:32 2000 by cvu_pod2html
 </FONT></ADDRESS>
-</BODY>
+</FONT></BODY>
 </HTML>

@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.48 $, 10;
+$VERSION = substr q$Revision: 1.49 $, 10;
 
 
 
@@ -1448,7 +1448,7 @@ the typo in approach #4?  C<;-)>
 
 =head1 VERSION
 
-$Id: Stream.pm,v 1.48 2000/06/13 04:30:47 eryq Exp $
+$Id: Stream.pm,v 1.49 2000/08/16 05:15:43 eryq Exp $
 
 
 =head1 CHANGE LOG
@@ -1456,23 +1456,23 @@ $Id: Stream.pm,v 1.48 2000/06/13 04:30:47 eryq Exp $
 =over 4
 
 
-=item Version 1.47
+=item Version 1.47   (2000/06/10)
 
 No real changes to code; just improved documentation.
 
 
-=item Version 1.45
+=item Version 1.45   (1999/02/09)
 
 Cleanup for Perl 5.005: removed duplicate typeglob assignments.
 
 
-=item Version 1.44
+=item Version 1.44   (1998/01/14)
 
 Win95 install (5.004) now works.
 Added SYNOPSIS to POD.
 
 
-=item Version 1.41
+=item Version 1.41   (1998/01/02)
 
 Removed $& for efficiency.
 I<Thanks, Andreas!>
@@ -1492,12 +1492,12 @@ but that's sort of a private tip-of-the-hat to the patch author, and the
 synonym may go away in the future.
 
 
-=item Version 1.37
+=item Version 1.37   (1997/02/09)
 
 No real change; just trying to make CPAN.pm happier.
 
 
-=item Version 1.32
+=item Version 1.32   (1997/01/12)
 
 B<NEW TOOL for generating Perl code which uses HTML::Stream!> 
 Check your toolkit for B<html2perlstream>.
@@ -1523,13 +1523,13 @@ greater flexibility for more-complex programs.
 Added POD documentation for all subroutines in the public interface.
 
 
-=item Version 1.29
+=item Version 1.29   (1996/12/10)
 
 Added terminating newline to comment().
 I<Thanks to John D Groenveld for the suggestion and the patch.>
 
 
-=item Version 1.27
+=item Version 1.27   (1996/12/10)
 
 Added built-in HTML::Stream::Latin1, which does a very simple encoding
 of all characters above ASCII 127.
@@ -1538,7 +1538,7 @@ Fixed bug in accept_tag(), where 'my' variable was shadowing argument.
 I<Thanks to John D Groenveld for the bug report and the patch.>
 
 
-=item Version 1.26 
+=item Version 1.26   (1996/09/27)
 
 Start of history.
 
