@@ -7,9 +7,9 @@ HTML::Stream - HTML output stream class, and some markup utilities
 
 =head1 DESCRIPTION
 
-The B<HTML::Stream> module provides you with an object-oriented 
+The B<HTML::Stream> module provides you with an object-oriented
 (and subclassable) way of outputting HTML.  Basically, you open up 
-an "HTML stream" on an existing filehandle, and then do all of your 
+an "HTML stream" on an existing filehandle, and then do all of your  
 output to the HTML stream.  You can intermix HTML-stream-output and 
 ordinary-print-output, if you like.
 
@@ -428,7 +428,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # Version...
-( $VERSION ) = '$Revision: 1.36 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.38 $ ' =~ /\$Revision:\s+([^\s]+)/;
          
 
 
@@ -1463,6 +1463,11 @@ HTML documents, seeing which ways I liked the most/least.
 
 =over 4
 
+=item Version 1.37
+
+No real change; just trying to make CPAN.pm happier.
+
+
 =item Version 1.32
 
 B<NEW TOOL for generating Perl code which uses HTML::Stream!> 
@@ -1513,7 +1518,7 @@ Start of history.
 
 =head1 VERSION
 
-$Revision: 1.36 $
+$Revision: 1.38 $
 
 
 =head1 ACKNOWLEDGEMENTS
@@ -1529,7 +1534,7 @@ Warmest thanks to...
 
 =head1 AUTHOR
 
-Eryq, eryq@enteract.com or eryq@rhine.gsfc.nasa.gov or thereabouts.
+Eryq, F<eryq@enteract.com> or F<eryq@rhine.gsfc.nasa.gov> or thereabouts.
 
 Enjoy.
 
@@ -1537,3 +1542,4 @@ Enjoy.
 
 #------------------------------------------------------------
 1;
+

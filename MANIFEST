@@ -1,10 +1,13 @@
 COPYING
-HTML/Stream.pm
+lib/HTML/Stream.pm
 MANIFEST
 Makefile.PL
 README
 bin/html2perlstream
-docs/HTML-Stream.html
+docs/HTML/Stream.pm.html
+docs/HTML/sandstn.jpg
+docs/HTML/stream-sm.gif
+docs/HTML/streambul.gif
 docs/html2perlstream.html
 etc/HTML/Entities.pm
 etc/HTML/Parser.pm
@@ -16,3 +19,4 @@ examples/opts
 testin/README
 testin/test.html
 testout/README
+

@@ -39,7 +39,7 @@ just do this:
 
 =over 4
 
-=item -d
+=item B<-d>
 
 Automatically load and run the output Perl file, then do a diff on
 that and the input file (you must input from a file and output to a
@@ -47,9 +47,9 @@ file in order to use this).
 
     html2perlstream -w -d testin/test.html
 
-You'll get fewer differences if you build the code with "-w".
+You'll get fewer differences if you build the code with C<-w>.
 
-=item -w
+=item B<-w>
 
 Try to generate code which will output all whitespace between tags verbatim.  
 The default code only outputs whitespace if it is believed to be 
@@ -60,12 +60,12 @@ needed; e.g., if we are inside a C<PRE> environment.
 
 =head1 VERSION
 
-$Id: html2perlstream,v 1.4 1997/01/13 03:58:37 eryq Exp $
+$Id: html2perlstream,v 1.7 1997/02/25 04:53:35 eryq Exp $
 
 
 =head1 AUTHOR
 
-Eryq, 11 Jan 1997, eryq@enteract.com or thereabouts.
+Eryq, 11 Jan 1997, F<eryq@enteract.com> or thereabouts.
 
 Thanks (independently) to Tony Cebzanov and John Buckman for suggesting 
 that I write a tool like this.
@@ -96,7 +96,7 @@ use vars qw($VERSION
 #------------------------------------------------------------
 
 # Version...
-( $VERSION ) = '$Revision: 1.4 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.7 $ ' =~ /\$Revision:\s+([^\s]+)/;
 
 # Escape-map:
 my %PerlUnescape = (

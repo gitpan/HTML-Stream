@@ -5,8 +5,9 @@ use ExtUtils::MakeMaker;
 # Configuration:
 #------------------------------------------------------------
 
+my $POD2HTML = "perl -I ~/dev/perl/podpeople/lib ~/dev/perl/podpeople/bin/pod2coolhtml";
 my @EXES = <bin/html2perlstream>;     # executables
-my @MODS = <HTML/*.pm>;               # modules
+my @MODS = <lib/HTML/*.pm>;           # modules
 
 #------------------------------------------------------------
 # Distribution stuff:
@@ -14,15 +15,8 @@ my @MODS = <HTML/*.pm>;               # modules
 
 # Figure out the stuff we need to do to build a distribution:
 my @DIST_PREOPS;
-push @DIST_PREOPS, map {
-    s/\.pm$//;
-    my $out = $_; $out =~ s{/}{-}g;
-    "pod2html2 --infile=$_.pm \\\n\t\t --outfile=docs/$out.html ;"
-} @MODS;
-push @DIST_PREOPS, map {
-    my $out = $_; $out =~ s{^[^/]+/}{};
-    "pod2html2 --infile=$_ \\\n\t\t --outfile=docs/$out.html ;"
-} @EXES;
+push @DIST_PREOPS, "$POD2HTML -R lib -I HTML -O docs ;";
+push @DIST_PREOPS, "$POD2HTML -i bin/html2perlstream -O docs -n html2perlstream -c docs/HTML/index.chc;";
 $DIST_PREOP .= join("\\\n\t", @DIST_PREOPS) . " echo done";
 
 #------------------------------------------------------------
@@ -32,7 +26,7 @@ $DIST_PREOP .= join("\\\n\t", @DIST_PREOPS) . " echo done";
 # Write the Makefile:
 WriteMakefile(
 	      NAME         => 'HTML::Stream',
-	      VERSION_FROM => "HTML/Stream.pm",
+	      VERSION_FROM => "lib/HTML/Stream.pm",
 	      DISTNAME     => "HTML-Stream",
 	      EXE_FILES    => [@EXES],
 	      'dist'       => {
