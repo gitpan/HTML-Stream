@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.44 $, 10;
+$VERSION = substr q$Revision: 1.45 $, 10;
 
 
 
@@ -851,9 +851,6 @@ sub ent {
     $self->{OUT}->print("\&$entity;");
     $self;
 }
-
-# Make a synonym:
-*e = undef;            # prevents "name only used once" warnings
 *e = \&ent;
 
 
@@ -923,9 +920,6 @@ sub text {
     $self->{OUT}->print(&{$self->{Esc}}(join('',@_)));
     $self;
 }
-
-# Make a synonym:
-*t = undef;            # prevents "name only used once" warnings
 *t = \&text;
 
 #------------------------------
@@ -950,7 +944,6 @@ sub text_nbsp {
     $self->{OUT}->print($txt);
     $self;
 }
-*nbsp_text = undef;            # prevents "name only used once" warnings
 *nbsp_text = \&text_nbsp;      # deprecated, but supplied for John :-)
 
 
@@ -1462,6 +1455,10 @@ HTML documents, seeing which ways I liked the most/least.
 
 =over 4
 
+=item Version 1.45
+
+Cleanup for Perl 5.005: removed duplicate typeglob assignments.
+
 =item Version 1.44
 
 Win95 install (5.004) now works.
@@ -1542,7 +1539,7 @@ Start of history.
 
 =head1 VERSION
 
-$Revision: 1.44 $
+$Revision: 1.45 $
 
 
 =head1 ACKNOWLEDGEMENTS

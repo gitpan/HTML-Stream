@@ -60,12 +60,12 @@ needed; e.g., if we are inside a C<PRE> environment.
 
 =head1 VERSION
 
-$Id: html2perlstream,v 1.8 1997/02/25 05:03:21 eryq Exp $
+$Id: html2perlstream,v 1.9 1998/01/14 09:02:56 eryq Exp $
 
 
 =head1 AUTHOR
 
-Eryq, 11 Jan 1997, F<eryq@enteract.com> or thereabouts.
+Eryq, 11 Jan 1997, F<eryq@zeegee.com> or thereabouts.
 
 Thanks (independently) to Tony Cebzanov and John Buckman for suggesting 
 that I write a tool like this.
@@ -96,7 +96,7 @@ use vars qw($VERSION
 #------------------------------------------------------------
 
 # Version...
-( $VERSION ) = '$Revision: 1.8 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.9 $ ' =~ /\$Revision:\s+([^\s]+)/;
 
 # Escape-map:
 my %PerlUnescape = (
@@ -360,7 +360,7 @@ EOF
 sub usage {
     print STDERR <<EOF;
 
-html2perlstream version $VERSION by Eryq, Jan 1997, eryq\@enteract.com.
+html2perlstream version $VERSION by Eryq, Jan 1997, eryq\@zeegee.com.
 
 Usage: html2perlstream [options] [files...]
            -d    automatically run Perl on output, and diff with input
