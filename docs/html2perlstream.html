@@ -1,0 +1,137 @@
+    <HTML>
+
+    <HEAD>
+    <TITLE></TITLE>
+    </HEAD>
+
+    <BODY>
+
+<!-- INDEX BEGIN -->
+<UL>
+	<LI><A HREF="#name">NAME</A>
+	<LI><A HREF="#synopsis">SYNOPSIS</A>
+	<LI><A HREF="#description">DESCRIPTION</A>
+	<LI><A HREF="#options">OPTIONS</A>
+	<LI><A HREF="#version">VERSION</A>
+	<LI><A HREF="#author">AUTHOR</A>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">NAME</A></H1>
+html2perlstream - convert an HTML document to Perl code for that document
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="synopsis">SYNOPSIS</A></H1>
+<PRE>
+    html2perlstream
+    html2perlstream [-w] -
+    html2perlstream [-w] file.html .. file.html
+</PRE>
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="description">DESCRIPTION</A></H1>
+Takes an HTML file, and produces from it a Perl script that will generate
+that HTML using the HTML::Stream module.
+
+
+<P>
+
+For usage, just say:
+
+
+<P>
+
+<PRE>
+    html2perlstream
+</PRE>
+
+<P>
+
+The normal form is:
+
+
+<P>
+
+<PRE>
+    html2perlstream [-options] [files]
+</PRE>
+
+<P>
+
+Any named HTML input file <EM>file.html</EM>
+ will cause output script 
+<EM>file.html.pl</EM>
+ to be generated. To read from the standard input, specify '-', like this:
+
+
+<P>
+
+<PRE>
+    html2perlstream - &lt; test.html
+</PRE>
+
+<P>
+
+If reading from the standard input, the output Perl code goes to the
+standard output. So if you want to run it right away to see the output,
+just do this:
+
+
+<P>
+
+<PRE>
+    html2perlstream - &lt; test.html | perl
+</PRE>
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="options">OPTIONS</A></H1>
+<DL>
+<DT><STRONG><A NAME="item_w">-w
+
+</A></STRONG><DD>
+Try to generate code which will output all whitespace between tags
+verbatim. The default code only outputs whitespace if it is believed to be
+needed; e.g., if we are inside a <CODE>PRE</CODE> environment.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
+<H1><A NAME="version">VERSION</A></H1>
+$Id: html2perlstream,v 1.3 1997/01/12 05:38:09 eryq Exp $
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="author">AUTHOR</A></H1>
+Eryq, 11 Jan 1997, <A HREF="MAILTO:eryq@enteract.com">eryq@enteract.com</A>
+or thereabouts.
+
+
+<P>
+
+Thanks (independently) to Tony Cebzanov and John Buckman for suggesting
+that I write a tool like this.
+
+
+<P>
+
+    </BODY>
+
+    </HTML>

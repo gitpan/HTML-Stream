@@ -1,88 +1,76 @@
 NAME
 
-   HTML::Stream - HTML output stream class, and some markup utilities
+    HTML::Stream - HTML output stream class, and some markup utilities
 
 DESCRIPTION
 
-   This module provides you with an object-oriented (and subclassable)
-   way of outputting HTML.  Basically, you open up an "HTML stream" 
-   on an existing filehandle (or any blessed object that has a print()
-   method), and then do all of your output to the HTML stream (you can 
-   intermix HTML-stream-output and ordinary-print-output, if you like).
+    The HTML::Stream Perl5 module provides you with an object-oriented 
+    (and subclassable) way of outputting HTML.  Basically, you open up 
+    an "HTML stream" on an existing filehandle, and then do all of your 
+    output to the HTML stream.  You can intermix HTML-stream-output and 
+    ordinary-print-output, if you like.
 
-   Here's small sample of the different ways you can use this module:
+    Here's small sample of the different ways you can use this module:
 
-       use HTML::Stream;
-       $HTML = new HTML::Stream \*STDOUT;
+        use HTML::Stream qw(:funcs);
+        $HTML = new HTML::Stream \*STDOUT;
       
-       # The vanilla interface...
-       tag  $HTML 'A', HREF=>"$href";
-       tag  $HTML 'IMG', SRC=>"logo.gif", ALT=>"LOGO";
-       text $HTML "My caption!";
-       tag  $HTML '_A';
-       text $HTML $a_lot_of_text;
+        # The vanilla interface...
+        $HTML->tag('A', HREF=>"$href");
+        $HTML->tag('IMG', SRC=>"logo.gif", ALT=>"LOGO");
+        $HTML->text($caption);
+        $HTML->tag('_A');
+             
+        # The chocolate interface (with whipped cream)...
+        $HTML -> A(HREF=>"$href")
+              -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
+              -> t($caption)
+              -> _A;
+       
+        # The strawberry interface...
+        output $HTML [A, HREF=>"$href"], 
+                     [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
+                     $caption,
+                     [_A];
 
-       # The chocolate interface (with whipped cream)...
-       $HTML -> A(HREF=>"$href")
-             -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
-             -> t("My caption!")
-             -> _A
-             -> t($a_lot_of_text);
+    Please see the HTML::Stream module for full details.
 
-       # The strawberry interface...
-       output $HTML [A, HREF=>"$href"], 
-                    [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
-                    "My caption!",
-                    [_A];
-       output $HTML $a_lot_of_text;
+KIT CONTAINS
 
-MODULE SPECIFICATIONS
+    HTML::Stream
+	The Perl module itself.
 
-    Module      DSLI    Description                               Info
-    ----------  ----    ----------------------------------------  ----
-    HTML::
-    ::Stream    adpO    OO "stream" for outputting HTML           ERYQ
+    html2perlstream	(in the ./bin directory)
+	New! A Perl program for generating HTML::Stream code from HTML.
+	You give the HTML you want to generate, and it spits out a .pl
+	file.
+  
+REQUIREMENTS AND INSTALLATION
 
-REQUIREMENTS
+    HTML::Stream
+        None for basic functionality, although you will need HTML::Entities
+        if you want to do some of the fancier Latin-1 escaping/unescaping.
+	
+    html2perlstream
+	You'll need to have HTML::Parser (and anything it depends on, probably
+        HTML::Entities) installed.  
 
-    Perl5.002 or better (an eval bug in Perl5.001l will probably cause 
-    core dumps during AUTOLOAD, and I have no idea if 5.001m fixed it).
+  * POSSIBLY-OLD COPIES OF HTML::Entities AND HTML::Parser HAVE BEEN PLACED
+    IN THE ./etc DIRECTORY FOR YOUR CONVENIENCE.  However, they will *not*
+    be installed during this toolkit's installation process, and I STRONGLY
+    urge you to get fresh, up-to-date copies from the CPAN 
+    (http://www.perl.com/perl).
 
-INSTALLATION
 
-    Pretty simple:
+WHERE TO GET IT
 
-        1. Gunzip and de-tar the distribution, and cd to the top level.
-        2. Type:      perl Makefile.PL
-        3. Type:      make                    # this step is optional
-        4. Type:      make test               # this step is optional
-        5. Type:      make install
-
-    Other interesting targets in the Makefile are:
-
-        make config     # to check if the Makefile is up-to-date
-        make clean      # delete local temp files (Makefile gets renamed)
-        make realclean  # delete derived files (including ./blib)
-
-CHANGE LOG
-
-	1.23	Added support for output to non-FileHandles
-
-	1.19	Base release.
-
-TERMS AND CONDITIONS
-
-    Copyright (c) 1996 by Eryq.  All rights reserved.  This program is free
-    software; you can redistribute it and/or modify it under the same terms as
-    Perl itself. 
-
-    See the COPYING file in the distribution for details.
+    Any CPAN site, in directory authors/Eryq.
+    Go to http://www.perl.com/perl for details.
 
 AUTHOR
 
-    Eryq, eryq@rhine.gsfc.nasa.gov
-    15 July 1996
-
-
+    Eryq, 11 Jan 1997
+    eryq@enteract.com  
+   
 
 

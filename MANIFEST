@@ -3,4 +3,16 @@ HTML/Stream.pm
 MANIFEST
 Makefile.PL
 README
+bin/html2perlstream
 docs/HTML-Stream.html
+docs/html2perlstream.html
+etc/HTML/Entities.pm
+etc/HTML/Parser.pm
+etc/README
+examples/README
+examples/giggles
+examples/latin
+examples/opts
+testin/README
+testin/test.html
+testout/README

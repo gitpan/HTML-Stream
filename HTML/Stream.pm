@@ -13,35 +13,47 @@ an "HTML stream" on an existing filehandle, and then do all of your
 output to the HTML stream.  You can intermix HTML-stream-output and 
 ordinary-print-output, if you like.
 
-Here's small sample of the different ways you can use this module:
+Here's small sample of some of the non-OO ways you can use this module:
+
+      use HTML::Stream qw(:funcs);
+      
+      print html_tag('A', HREF=>$link);     
+      print html_escape("<<Hello & welcome!>>");      
+
+And some of the OO ways as well:
 
       use HTML::Stream;
       $HTML = new HTML::Stream \*STDOUT;
       
       # The vanilla interface...
-      tag  $HTML 'A', HREF=>"$href";
-      tag  $HTML 'IMG', SRC=>"logo.gif", ALT=>"LOGO";
-      text $HTML "My caption!";
-      tag  $HTML '_A';
-      text $HTML $a_lot_of_text;
-
-      # The chocolate interface (with whipped cream)...
+      $HTML->tag('A', HREF=>"$href");
+      $HTML->tag('IMG', SRC=>"logo.gif", ALT=>"LOGO");
+      $HTML->text($copyright);
+      $HTML->tag('_A');
+      
+      # The chocolate interface...
+      $HTML -> A(HREF=>"$href");
+      $HTML -> IMG(SRC=>"logo.gif", ALT=>"LOGO");
+      $HTML -> t($caption);
+      $HTML -> _A;
+       
+      # The chocolate interface, with whipped cream...
       $HTML -> A(HREF=>"$href")
             -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
-            -> t("My caption!")
-            -> _A
-            -> t($a_lot_of_text);
+            -> t($caption)
+            -> _A;
 
       # The strawberry interface...
       output $HTML [A, HREF=>"$href"], 
                    [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
-                   "My caption!",
+                   $caption,
                    [_A];
-      output $HTML $a_lot_of_text;
 
 There's even a small built-in subclass, B<HTML::Stream::Latin1>, which can
 handle Latin-1 input right out of the box.   But all in good time...
 
+
+=head1 INTRODUCTION (the Neapolitan dessert special)
 
 =head2 Function interface
 
@@ -95,13 +107,6 @@ above example, rewritten using HTML streams:
     use HTML::Stream;
     $HTML = new HTML::Stream \*STDOUT;
     
-    tag  $HTML 'A', HREF=>$url;
-    ent  $HTML 'copy';
-    text $HTML " 1996 by $myname!";
-    tag  $HTML '_A';
-
-Or, if indirect-object syntax ain't your thang:
-
     $HTML->tag(A, HREF=>$url);
     $HTML->ent('copy');
     $HTML->text(" 1996 by $myname!");
@@ -109,14 +114,17 @@ Or, if indirect-object syntax ain't your thang:
 
 As you've probably guessed:
 
-    ent()      Outputs an HTML entity, like the &copy; or &lt; .
-    tag()      Outputs an ordinary tag, like <A>, possibly with parameters.
-               The parameters will all be HTML-escaped automatically.
-    text()     Outputs some text, which will be HTML-escaped.
+    text()   Outputs some text, which will be HTML-escaped.
+    
+    tag()    Outputs an ordinary tag, like <A>, possibly with parameters.
+             The parameters will all be HTML-escaped automatically.
+     
+    ent()    Outputs an HTML entity, like the &copy; or &lt; .
+             You mostly don't need to use it; you can often just put the 
+             Latin-1 representation of the character in the text().
 
-It you're I<not> using indirect-object syntax, you might prefer
-to use C<t()> and C<e()> instead of C<text()> and C<ent()>: they
-are absolutely identical... just shorter to type:
+You might prefer to use C<t()> and C<e()> instead of C<text()> 
+and C<ent()>: they're absolutely identical, and easier to type:
 
     $HTML -> tag(A, HREF=>$url);
     $HTML -> e('copy');
@@ -130,7 +138,7 @@ without giving you one for C<tag()>, would it?  Of course not...
 =head2 OO interface, chocolate
 
 The known HTML tags are even given their own B<tag-methods,> compiled on 
-demand... so the above could be written like this:
+demand.  The above code could be written even more compactly as:
 
     $HTML -> A(HREF=>$url);
     $HTML -> e('copy');
@@ -142,7 +150,7 @@ As you've probably guessed:
     A(HREF=>$url)   ==   tag(A, HREF=>$url)   ==   <A HREF="/the/url">
     _A              ==   tag(_A)              ==   </A>
 
-All such "tag-methods" use the tagname in I<all-uppercase>.
+All of the autoloaded "tag-methods" use the tagname in I<all-uppercase>.
 A C<"_"> prefix on any tag-method means that an end-tag is desired.
 The C<"_"> was chosen for several reasons: 
 (1) it's short and easy to type,
@@ -153,8 +161,8 @@ The C<"_"> was chosen for several reasons:
 
 =item *
 
-I<I know, I know... it looks like a private method.  You get used to it.  
-Really.>
+I<I know, I know... it looks like a private method.
+You get used to it.  Really.>
 
 =back
 
@@ -170,11 +178,11 @@ ain't it?)
 If you need to make a tag known (sorry, but this is currently a 
 I<global> operation, and not stream-specific), do this:
 
-    HTML::Stream->accept_tag('MARQUEE');     # for you MSIE fans...
+    accept_tag HTML::Stream 'MARQUEE';       # for you MSIE fans...
 
-B<There is no corresponding "reject_tag">.  I thought and thought
+B<Note: there is no corresponding "reject_tag".>  I thought and thought
 about it, and could not convince myself that such a method would 
-do anything more useful that cause other people's modules to suddenly
+do anything more useful than cause other people's modules to suddenly
 stop working because some bozo function decided to reject the C<FONT> tag.
 
 
@@ -182,13 +190,13 @@ stop working because some bozo function decided to reject the C<FONT> tag.
 
 In the grand tradition of C++, output method chaining is supported
 in both the Vanilla Interface and the Chocolate Interface.  
-So you can (and probably should) say:
+So you can (and probably should) write the above code as:
 
     $HTML -> A(HREF=>$url) 
-          -> e('copy') -> t("1996 by $myname!") 
+          -> e('copy') -> t(" 1996 by $myname!") 
           -> _A;
 
-But wait... there's one more flavor...
+I<But wait!  Neapolitan ice cream has one more flavor...>
 
 
 =head2 OO interface, strawberry
@@ -204,11 +212,14 @@ Conceptually, arrayrefs are sent to C<html_tag()>, and strings to
 C<html_escape()>.
 
 
-=head2 Newlines
+=head1 ADVANCED TOPICS
 
-As special cases, some tag-methods (like C<P>, C<_P>, and C<BR>) all cause 
-newlines to be output before and/or after the tag, so your HTML is a little 
-more readable when you do stuff like "view source" on a browser.  So:
+=head2 Auto-formatting and inserting newlines
+
+I<Auto-formatting> is the name I give to the Chocolate Interface feature
+whereby newlines (and maybe, in the future, other things)
+are inserted before or after the tags you output in order to make 
+your HTML more readable.  So, by default, this:
 
     $HTML -> HTML 
           -> HEAD  
@@ -216,7 +227,7 @@ more readable when you do stuff like "view source" on a browser.  So:
           -> _HEAD
           -> BODY(BGCOLOR=>'#808080');
 
-Actually produces:
+Actually produces this:
 
     <HTML><HTML>
     <HEAD>
@@ -224,12 +235,48 @@ Actually produces:
     </HEAD>
     <BODY BGCOLOR="#808080">
 
-(This will improve slightly as time goes on).
-You can also output newline explicitly via the special C<nl> method
+B<To turn off autoformatting altogether> on a given HTML::Stream object,
+use the C<auto_format()> method:
+
+    $HTML->auto_format(0);        # stop autoformatting!
+
+B<To change whether a newline is automatically output> before/after the 
+begin/end form of a tag at a B<global> level, use C<set_tag()>:
+
+    HTML::Stream->set_tag('B', Newlines=>15);   # 15 means "\n<B>\n \n</B>\n"
+    HTML::Stream->set_tag('I', Newlines=>7);    # 7 means  "\n<I>\n \n</I>  "
+
+B<To change whether a newline is automatically output> before/after the 
+begin/end form of a tag B<for a given stream> level, give the stream
+its own private "tag info" table, and then use C<set_tag()>:
+
+    $HTML->private_tags;
+    $HTML->set_tag('B', Newlines=>0);     # won't affect anyone else!
+
+B<To output newlines explicitly>, just use the special C<nl> method
 in the Chocolate Interface:
 
     $HTML->nl;     # one newline
     $HTML->nl(6);  # six newlines
+
+I am sometimes asked, "why don't you put more newlines in automatically?"
+Well, mostly because...
+
+=over 4
+
+=item *
+
+Sometimes you'll be outputting stuff inside a C<PRE> environment.
+
+=item *
+
+Sometimes you really do want to jam things (like images, or table
+cell delimiters and the things they contain) right up against each other.
+
+=back
+
+So I've stuck to outputting newlines in places where it's most likely
+to be harmless. 
 
 
 =head2 Entities
@@ -239,79 +286,79 @@ an entity:
 
     $HTML->t('Copyright ')->e('copy')->t(' 1996 by Me!');
 
-But this can be a pain, particularly for Europeans:
+But this can be a pain, particularly for generating output with
+non-ASCII characters:
 
     $HTML -> t('Copyright ') 
           -> e('copy') 
           -> t(' 1996 by Fran') -> e('ccedil') -> t('ois, Inc.!');
 
-Sooooooooo...
+Granted, Europeans can always type the 8-bit characters directly in
+their Perl code, and just have this:
+
+    $HTML -> t("Copyright \251 1996 by Fran\347ois, Inc.!');
+
+But folks without 8-bit text editors can find this kind of output
+cumbersome to generate.  Sooooooooo...
 
 
-=head2 Changing the way text is escaped
+=head2 Auto-escaping: changing the way text is escaped
 
-The default "autoescape" behavior of an HTML stream can be a drag if
+I<Auto-escaping> is the name I give to the act of taking an "unsafe"
+string (one with ">", "&", etc.), and magically outputting "safe" HTML.
+
+The default "auto-escape" behavior of an HTML stream can be a drag if
 you've got a lot character entities that you want to output, or if 
 you're using the Latin-1 character set, or some other input encoding.  
-Fortunately, you can use the C<autoescape()> method to change the 
+Fortunately, you can use the C<auto_escape()> method to change the 
 way a particular HTML::Stream works at any time.
 
 First, here's a couple of special invocations:
 
-    $HTML->autoescape('ALL');        # escapes [<>"&] - the default
-    $HTML->autoescape('NON_ENT');    # escapes [<>"] only, and not [&]
+    $HTML->auto_escape('ALL');      # Default; escapes [<>"&] and 8-bit chars.
+    $HTML->auto_escape('LATIN_1');  # Like ALL, but uses Latin-1 entities
+                                    #   instead of decimal equivalents.
+    $HTML->auto_escape('NON_ENT');  # Like ALL, but leaves "&" alone.
 
-You can also install your own autoescape function (note
+You can also install your own auto-escape function (note
 that you might very well want to install it for just a little bit
 only, and then de-install it):
 
-    sub my_autoescape {
+    sub my_auto_escape {
         my $text = shift;
-	$text = HTML::Stream::escape_all($text);   # start with default
+	HTML::Entities::encode($text);     # start with default
         $text =~ s/\(c\)/&copy;/ig;        # (C) becomes copyright
         $text =~ s/\\,(c)/\&$1cedil;/ig;   # \,c becomes a cedilla
  	$text;
     }
-
-    # Start using my autoescape:
-    my $oldesc = $HTML->autoescape(\&my_autoescape);      # use sub refs ONLY!
-    $HTML-> ADDRESS;
+    
+    # Start using my auto-escape:
+    my $old_esc = $HTML->auto_escape(\&my_auto_escape);  
+    
+    # Output some stuff:
     $HTML-> IMG(SRC=>'logo.gif', ALT=>'Fran\,cois, Inc');
     output $HTML 'Copyright (C) 1996 by Fran\,cois, Inc.!';
-    $HTML->_ADDRESS;
     
-    # Stop using my autoescape:
-    $HTML->autoescape($oldesc);
+    # Stop using my auto-escape:
+    $HTML->auto_escape($old_esc);
 
 If you find yourself in a situation where you're doing this a lot,
 a better way is to create a B<subclass> of HTML::Stream which installs
-your custom function when constructed.  For example, see the 
-HTML::Stream::Latin1 example in this module, used as follows:
-
-    use HTML::Stream;
-    
-    $HTML = new HTML::Stream::Latin1 \*STDOUT;
-    output $HTML "\253A right angle is 90\260, \277No?\273\n";
-
-By the way, the following are equivalent:
-
-    $HTML->autoescape('ALL')
-    $HTML->autoescape(\&HTML::Stream::escape_all);
-
-No arguments to C<autoescape()> returns the current autoescape function.
+your custom function when constructed.  For an example, see the 
+B<HTML::Stream::Latin1> subclass in this module.
 
 
 =head2 Outputting HTML to things besides filehandles
 
 As of Revision 1.21, you no longer need to supply C<new()> with a 
 filehandle: I<any object that responds to a print() method will do>.
-Of course, this includes B<blessed> FileHandles.
+Of course, this includes B<blessed> FileHandles, and IO::Handles.
 
 If you supply a GLOB reference (like C<\*STDOUT>) or a string (like
 C<"Module::FH">), HTML::Stream will automatically create an invisible
 object for talking to that filehandle (I don't dare bless it into a
-FileHandle, since it'd get closed when the HTML::Stream is destroyed,
-and you might not like that).
+FileHandle, since the underlying descriptor would get closed when 
+the HTML::Stream is destroyed, and you might not want that).
 
 You say you want to print to a string?  For kicks and giggles, try this:
 
@@ -364,88 +411,7 @@ shouldn't use all-uppercase, since that's what this module uses for
 real HTML tags.
 
 
-=head1 PERFORMANCE
-
-Slower than I'd like.  Both the output() method and the various "tag" 
-methods seem to run about 5 times slower than the old 
-just-hardcode-the-darn stuff approach.  That is, in general, this:
-
-    ### Approach #1...
-    tag  $HTML 'A', HREF=>"$href";
-    tag  $HTML 'IMG', SRC=>"logo.gif", ALT=>"LOGO";
-    text $HTML "My caption!";
-    tag  $HTML '_A';
-    text $HTML $a_lot_of_text;
-
-And this:
-
-    ### Approach #2...
-    output $HTML [A, HREF=>"$href"], 
-	         [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
-		 "My caption!",
-		 [_A];
-    output $HTML $a_lot_of_text;
-
-And this:
-
-    ### Approach #3...
-    $HTML -> A(HREF=>"$href")
-	  -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
-	  -> t("My caption!")
-	  -> _A
-          -> t($a_lot_of_text);
-
-Each run about 5x slower than this:
-
-    ### Approach #4...
-    print '<A HREF="', html_escape($href), '>',
-          '<IMG SRC="logo.gif" ALT="LOGO">',
-  	  "My caption!",
-          '</A>';
-    print html_escape($a_lot_of_text);
-
-Of course, I'd much rather use any of first three I<(especially #3)> 
-if I had to get something done right in a hurry.  Or did you not notice
-the typo in approach #4?  C<;-)>
-
-(BTW, thanks to Benchmark:: for allowing me to... er... benchmark stuff.)
-
-
-=head1 WHY IN THE WORLD DID I WRITE THIS?
-
-I was just mucking about with different ways of generating large
-HTML documents, seeing which ways I liked the most/least.
-
-
-=head1 CHANGE LOG
-
-=over 4
-
-=item Version 1.27
-
-Added built-in HTML::Stream::Latin1, which does a very simple encoding
-of all characters above ASCII 127.
-
-Fixed bug in accept_tag(), where 'my' variable was shadowing argument.
-I<Thanks to John D Groenveld for the bug report and the patch.>
-
-=item Version 1.26 
-
-Start of history.
-
-=back
-
-
-=head1 VERSION
-
-$Revision: 1.29 $
-
-
-=head1 AUTHOR
-
-Eryq, eryq@rhine.gsfc.nasa.gov .  
-
-Enjoy.
+=head1 PUBLIC INTERFACE
 
 =cut
 
@@ -462,7 +428,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # Version...
-( $VERSION ) = '$Revision: 1.29 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.32 $ ' =~ /\$Revision:\s+([^\s]+)/;
          
 
 
@@ -472,18 +438,22 @@ Exporter::export_ok_tags('funcs');
 #
 #------------------------------------------------------------
 
-# HTML escape sequences.  This bit was stolen from html_escape() in CGI::Base.
-my %Escape = (
-    '&' => '&amp;', 
-    '>' => '&gt;', 
-    '<' => '&lt;', 
-    '"' => '&quot;'
-);
-my $AllEscapes    = '<>"&';
-my $NonEntEscapes = '<>"';
-
 # Allow dashes to become slashes?
 $DASH_TO_SLASH = 1;
+
+# HTML escape sequences.  This bit was stolen from html_escape() in CGI::Base.
+my %Escape = (
+    '&' => 'amp', 
+    '>' => 'gt', 
+    '<' => 'lt', 
+    '"' => 'quot'
+);
+my %Unescape;
+{my ($k, $v); $Unescape{$v} = $k while (($k, $v) = each %Escape);}
+
+# Flags for streams:
+my $F_NEWLINE = 0x01;      # is autonewlining allowed?
+
 
 
 #------------------------------------------------------------
@@ -496,11 +466,30 @@ $DASH_TO_SLASH = 1;
 # escape_all TEXT
 #------------------------------------------------------------
 # Given a TEXT string, turn the text into valid HTML by interpolating the 
-# appropriate escape sequences for angles, double-quotes, and ampersands:
+# appropriate escape sequences for all troublesome characters
+# (angles, double-quotes, ampersands, and 8-bit characters).
+#
+# Uses the decimal-value syntax for 8-bit characters).
 
 sub escape_all {
     my $text = shift;
-    $text =~ s/([$AllEscapes])/$Escape{$1}/mgoe; 
+    $text =~ s/[<>"&]/\&$Escape{$&};/mg; 
+    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
+    $text;
+}
+
+#------------------------------------------------------------
+# escape_latin_1 TEXT
+#------------------------------------------------------------
+# Given a TEXT string, turn the text into valid HTML by interpolating the 
+# appropriate escape sequences for all troublesome characters
+# (angles, double-quotes, ampersands, and 8-bit characters).
+#
+# Uses the Latin-1 entities for 8-bit characters.
+
+sub escape_latin_1 {
+    my $text = shift;
+    HTML::Entities::encode($text);  # can't use $_[0]! encode is destructive!
     $text;
 }
 
@@ -508,11 +497,13 @@ sub escape_all {
 # escape_non_ent TEXT
 #------------------------------------------------------------
 # Given a TEXT string, turn the text into valid HTML by interpolating the 
-# appropriate escape sequences for angles and double-quotes only:
+# appropriate escape sequences for angles, double-quotes, and 8-bit
+# characters only (i.e., ampersands are left alone).
 
 sub escape_non_ent {
     my $text = shift;
-    $text =~ s/([$NonEntEscapes])/$Escape{$1}/mgoe; 
+    $text =~ s/[<>"]/\&$Escape{$&};/mg; 
+    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
     $text;
 }
 
@@ -526,7 +517,7 @@ sub escape_none {
 }
 
 #------------------------------------------------------------
-# build_tag ESCAPEFUNC, ARRAYREF
+# build_tag ESCAPEFUNC, \@TAGINFO
 #------------------------------------------------------------
 # I<Internal use only!>  Build an HTML tag using the given ESCAPEFUNC.
 # As an efficiency hack, only the values are HTML-escaped currently:
@@ -553,32 +544,56 @@ sub build_tag {
 
 
 #------------------------------------------------------------
-#
-# PUBLIC UTILITIES
-#
-#------------------------------------------------------------
+
+
+
+=head2 Functions
+
+=over 4
+
+=cut
 
 #------------------------------------------------------------
-# html_escape TEXT
+
+
 #------------------------------------------------------------
-# Given a TEXT string, turn the text into valid HTML by 
-# interpolating the appropriate escape sequences. 
+# html_escape
+#------------------------------------------------------------
+
+=item html_escape TEXT
+
+Given a TEXT string, turn the text into valid HTML by escaping "unsafe" 
+characters.  Currently, the "unsafe" characters are 8-bit characters plus:
+
+    <  >  =  &
+
+B<Note:> provided for convenience and backwards-compatibility only.
+You may want to use the more-powerful B<HTML::Entities::encode>
+function instead.
+
+=cut
 
 sub html_escape {
     my $text = shift;
-    $text =~ s/([$AllEscapes])/$Escape{$1}/mgoe; 
+    $text =~ s/[<>"&]/\&$Escape{$&};/mg; 
+    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
     $text;
 }
  
 #------------------------------------------------------------
-# html_tag TAG [, PARAM=>VALUE, ...]
+# html_tag
 #------------------------------------------------------------
-# Return the text for a given TAG, possibly with parameters.
-# As an efficiency hack, only the values are HTML-escaped currently:
-# it is assumed that the tag and parameters will already be safe.
-#
-# For convenience and readability, you can say _A instead of '/A'
-# for the first tag, if you're into barewords.
+
+=item html_tag TAG [, PARAM=>VALUE, ...]
+
+Return the text for a given TAG, possibly with parameters.
+As an efficiency hack, only the values are HTML-escaped currently:
+it is assumed that the tag and parameters will already be safe.
+
+For convenience and readability, you can say C<_A> instead of C<"/A">
+for the first tag, if you're into barewords.
+
+=cut
 
 sub html_tag {
     build_tag(\&html_escape, \@_);    # warning! using ref to @_!
@@ -587,24 +602,41 @@ sub html_tag {
 #------------------------------------------------------------
 # html_unescape TEXT
 #------------------------------------------------------------
-# Remove <tag> markup and &-escapes.
+
+=item html_unescape TEXT
+
+Remove angle-tag markup, and convert the standard ampersand-escapes
+(C<lt>, C<gt>, C<amp>, C<quot>, and C<#ddd>) into ASCII characters.
+
+B<Note:> provided for convenience and backwards-compatibility only.
+You may want to use the more-powerful B<HTML::Entities::decode>
+function instead: unlike this function, it can collapse entities
+like C<copy> and C<ccedil> into their Latin-1 byte values.
+
+=cut
 
 sub html_unescape {
     my ($text) = @_;
 
     # Remove <tag> sequences.  KLUDGE!  I'll code a better way later.
     $text =~ s/\<[^>]+\>//g;
-    $text =~ s/\&lt;/</gi;
-    $text =~ s/\&gt;/>/gi;
-    $text =~ s/\&quot;/"/gi;     # Just the standard " : no `` or ''
-    $text =~ s/\&amp;/&/gi;
+    $text =~ s/\&([a-z]+);/$Unescape{$1}/gi;
+    $text =~ s/\&\#(\d+);/pack("C",$1)/gie;
     return $text;
 }
 
 #------------------------------------------------------------
 # html_unmarkup TEXT
 #------------------------------------------------------------
-# Remove HTML markup from TEXT.  Cheesy.
+
+=item html_unmarkup TEXT
+
+Remove angle-tag markup from TEXT, but do not convert ampersand-escapes.  
+Cheesy, but theoretically useful if you want to, say, incorporate
+externally-provided HTML into a page you're generating, and are worried
+that the HTML might contain undesirable markup.
+
+=cut
 
 sub html_unmarkup {
     my ($text) = @_;
@@ -615,24 +647,41 @@ sub html_unmarkup {
 }
 
 
-#------------------------------------------------------------
-#
-# OO INTERFACE, VANILLA
-#
+
 #------------------------------------------------------------
 
-# Special mapping from names to utility functions:
+=back
+
+=head2 Vanilla
+
+=over 4
+
+=cut
+
+#------------------------------------------------------------
+
+# Special mapping from names to utility functions (more stable than symtable):
 my %AutoEscapeSubs = 
     ('ALL'     => \&HTML::Stream::escape_all,
+     'LATIN_1' => \&HTML::Stream::escape_latin_1,
      'NON_ENT' => \&HTML::Stream::escape_non_ent,
      );
 
 
 #------------------------------------------------------------
-# new [PRINTABLE] 
+# new 
 #------------------------------------------------------------
-# Create a new HTML output stream.
-# If no PRINTABLE is given, does a select() and uses that.
+
+=item new [PRINTABLE] 
+
+I<Class method.>
+Create a new HTML output stream.
+
+The PRINTABLE may be a FileHandle, a glob reference, or any object
+that responds to a C<print()> message.
+If no PRINTABLE is given, does a select() and uses that.
+
+=cut
 
 sub new {
     my $class = shift;
@@ -645,8 +694,10 @@ sub new {
 
     # Create the object:
     my $self = { 
-	OUT  => $out,
-	Esc => \&escape_all,
+	OUT   => $out,
+	Esc   => \&escape_all,
+	Tags  => \%Tags,          # reference to the master table
+	Flags => $F_NEWLINE,      # autonewline
     };
     bless $self, $class;
 }
@@ -659,19 +710,77 @@ sub new {
 sub DESTROY { 1 }
 
 #------------------------------------------------------------
-# autoescape [NAME]
-# autoescape [SUBREF]
+# autoescape - DEPRECATED as of 1.31 due to bad name choice
 #------------------------------------------------------------
-# Set the autoescape function for this HTML stream.
-#
-# If a textual name is given, then one of the appropriate built-in 
-# functions is used.  If the argument is a subroutine reference, 
-# then that subroutine will be used.
-#
-# Returns the previously-installed function, in the manner of C<select()>.
-# No arguments just returns the currently-installed function.
-
 sub autoescape {
+    my $self = shift;
+    warn "HTML::Stream's autoescape() method is deprecated.\n",
+         "Please use the identical (and more nicely named) auto_escape().\n";
+    $self->auto_escape(@_);
+}
+
+#------------------------------------------------------------
+# auto_escape
+#------------------------------------------------------------
+
+=item auto_escape [NAME|SUBREF]
+
+I<Instance method.>
+Set the auto-escape function for this HTML stream.
+
+If the argument is a subroutine reference SUBREF, then that subroutine 
+will be used.  Declare such subroutines like this:
+
+    sub my_escape {
+	my $text = shift;     # it's passed in the first argument
+        ...
+        $text;
+    }
+
+If a textual NAME is given, then one of the appropriate built-in 
+functions is used.  Possible values are:
+
+=over 4
+
+=item ALL
+
+Default for HTML::Stream objects.  This escapes angle brackets, 
+ampersands, double-quotes, and 8-bit characters.  8-bit characters 
+are escaped using decimal entity codes (like C<#123>).
+
+=item LATIN_1
+
+Like C<"ALL">, but uses Latin-1 entity names (like C<ccedil>) instead of
+decimal entity codes to escape characters.  This makes the HTML more readable
+but it is currently not advised, as "older" browsers (like Netscape 2.0)
+do not recognize many of the ISO-8859-1 entity names (like C<deg>).
+
+B<Warning:> If you specify this option, you'll find that it attempts
+to "require" B<HTML::Entities> at run time.  That's because I didn't want 
+to I<force> you to have that module just to use the rest of HTML::Stream.
+To pick up problems at compile time, you are advised to say:
+
+    use HTML::Stream;
+    use HTML::Entities;
+
+in your source code.
+
+=item NON_ENT
+
+Like C<"ALL">, except that ampersands (&) are I<not> escaped.
+This allows you to use &-entities in your text strings, while having
+everything else safely escaped:
+
+    output $HTML "If A is an acute angle, then A > 90&deg;";
+
+=back
+
+Returns the previously-installed function, in the manner of C<select()>.
+No arguments just returns the currently-installed function.
+
+=cut
+
+sub auto_escape {
     my $self = shift;
 
     # Grab existing value:
@@ -681,8 +790,9 @@ sub autoescape {
     if (@_) { 
 	my $newesc = shift;
 	if (ref($newesc) ne 'CODE') {  # must be a string: map it to a subref
+	    require HTML::Entities if ($newesc eq 'LATIN_1');
 	    $newesc = $AutoEscapeSubs{uc($newesc)} or
-		croak "never heard of autoescape option '$newesc'";
+		croak "never heard of auto-escape option '$newesc'";
 	}
 	$self->{Esc} = $newesc;
     }
@@ -692,24 +802,64 @@ sub autoescape {
 }
 
 #------------------------------------------------------------
-# comment COMMENT
+# auto_format
 #------------------------------------------------------------
-# Output an HTML comment.
 
-sub comment {
-    my $self = shift;
-    $self->{OUT}->print('<!-- ', &{$self->{Esc}}(join('',@_)), ' -->');
+=item auto_format ONOFF
+
+I<Instance method.>
+Set the auto-formatting characteristics for this HTML stream.
+Currently, all you can do is supply a single defined boolean
+argument, which turns auto-formatting ON (1) or OFF (0). 
+The self object is returned.
+
+Please use no other values; they are reserved for future use.
+
+=cut
+
+sub auto_format {
+    my ($self, $onoff) = @_;
+    ($self->{Flags} &= (~1 << 0)) |= ($onoff << 0);
     $self;
 }
 
 #------------------------------------------------------------
-# ent ENTITY
+# comment
 #------------------------------------------------------------
-# Output an HTML entity.  For example, here's how you'd output C<&nbsp;>:
-#     
-#      $html->ent('nbsp');
-#
-# B<Warning:> this function assumes that the entity argument is legal.
+
+=item comment COMMENT
+
+I<Instance method.>
+Output an HTML comment.
+As of 1.29, a newline is automatically appended.
+
+=cut
+
+sub comment {
+    my $self = shift;
+    $self->{OUT}->print('<!-- ', &{$self->{Esc}}(join('',@_)), " -->\n");
+    $self;
+}
+
+#------------------------------------------------------------
+# ent
+#------------------------------------------------------------
+
+=item ent ENTITY
+
+I<Instance method.>
+Output an HTML entity.  For example, here's how you'd output a 
+non-breaking space:
+
+      $html->ent('nbsp');
+
+You may abbreviate this method name as C<e>:
+
+      $html->e('nbsp');
+
+B<Warning:> this function assumes that the entity argument is legal.
+
+=cut
 
 sub ent {
     my ($self, $entity) = @_;
@@ -722,9 +872,15 @@ sub ent {
 
 
 #------------------------------------------------------------
-# nl COUNT
+# nl 
 #------------------------------------------------------------
-# Output COUNT newlines.  If undefined, COUNT defaults to 1.
+
+=item nl [COUNT]
+
+I<Instance method.>
+Output COUNT newlines.  If undefined, COUNT defaults to 1.
+
+=cut
 
 sub nl {
     my ($self, $count) = @_;
@@ -733,10 +889,16 @@ sub nl {
 }
 
 #------------------------------------------------------------
-# tag TAGNAME [, PARAM=>VALUE, ...]
+# tag 
 #------------------------------------------------------------
-# Output a tag.  Returns the self object, to allow method chaining.
-# You can specify _A for '/A' if you're into barewords.
+
+=item tag TAGNAME [, PARAM=>VALUE, ...]
+
+I<Instance method.>
+Output a tag.  Returns the self object, to allow method chaining.
+You can say C<_A> instead of C<"/A">, if you're into barewords.
+
+=cut
 
 sub tag {
     my $self = shift;
@@ -745,9 +907,18 @@ sub tag {
 }
 
 #------------------------------------------------------------
-# text TEXT, ..., TEXT
+# text
 #------------------------------------------------------------
-# Output some text. Returns the self object, to allow method chaining.
+
+=item text TEXT, ..., TEXT
+
+I<Instance method.>
+Output some text. Returns the self object, to allow method chaining.
+You may abbreviate this method name as C<t>:
+
+      $html->t('Hi there, ', $yournamehere, '!');
+
+=cut
 
 sub text {
     my $self = shift;
@@ -760,19 +931,31 @@ sub text {
 
 
 #------------------------------------------------------------
-#
-# OO INTERFACE, STRAWBERRY
-#
+
+=back
+
+=head2 Strawberry
+
+=over 4
+
+=cut
+
 #------------------------------------------------------------
 
 #------------------------------------------------------------
-# output ITEM,...,ITEM
+# output
 #------------------------------------------------------------
-# Go through the items.  If an item is an arrayref, treat it like
-# the array argument to html_tag() and output the result.  If an item
-# is a text string, escape the text and output the result.  Like this:
-#
-#     output $HTML [A, HREF=>$url], "Here's my $caption!", [_A];
+
+=item output ITEM,...,ITEM
+
+I<Instance method.>
+Go through the items.  If an item is an arrayref, treat it like
+the array argument to html_tag() and output the result.  If an item
+is a text string, escape the text and output the result.  Like this:
+
+     output $HTML [A, HREF=>$url], "Here's my $caption!", [_A];
+
+=cut
 
 sub output {
     my $self = shift;
@@ -794,17 +977,27 @@ sub output {
 
 
 #------------------------------------------------------------
-#
-# OO INTERFACE, CHOCOLATE
-#
+
+=back
+
+=head2 Chocolate
+
+=over 4
+
+=cut
+
 #------------------------------------------------------------
 
-# The known HTML tags. 
-# The value is a set of flags:
+#------------------------------------------------------------
+# %Tags
+#------------------------------------------------------------
+# The default known HTML tags.  The value if each is CURRENTLY a set of flags:
+#
 #     0x01    newline before <TAG>
 #     0x02    newline after <TAG>
 #     0x04    newline before </TAG>
 #     0x08    newline after </TAG>
+#
 # This can be summarized as:
 
 my $TP     = 1 | 0 | 0 | 0;
@@ -874,20 +1067,190 @@ my $TSOLO  = 0 | 2 | 0 | 0;
      VAR     => 0,
      );
 
+
 #------------------------------------------------------------
-# accept_tag TAG
+# accept_tag 
 #------------------------------------------------------------
-# I<Class method>.
-# Accept the given TAG in the Chocolate Interface.
+
+=item accept_tag TAG
+
+I<Class method.>
+Declares that the tag is to be accepted as valid HTML (if it isn't already).
+For example, this...
+
+     # Make sure methods MARQUEE and _MARQUEE are compiled on demand:
+     HTML::Stream->accept_tag('MARQUEE'); 
+
+...gives the Chocolate Interface permission to create (via AUTOLOAD)
+definitions for the MARQUEE and _MARQUEE methods, so you can then say:
+
+     $HTML -> MARQUEE -> t("Hi!") -> _MARQUEE;
+
+If you want to set the default attribute of the tag as well, you can
+do so via the set_tag() method instead; it will effectively do an
+accept_tag() as well.
+
+     # Make sure methods MARQUEE and _MARQUEE are compiled on demand,
+     #   *and*, set the characteristics of that tag.
+     HTML::Stream->set_tag('MARQUEE', Newlines=>9);
+
+=cut
 
 sub accept_tag {
-    my ($class, $tag) = @_;
-    $tag = uc($tag);           # it's GOT to be uppercase!!!
-    unless ($Tags{$tag}) {
-	$Tags{$tag} = 0;       # no newlines
-    }
-    1;
+    my ($self, $tag) = @_;
+    my $class = (ref($self) ? ref($self) : $self);   # force it, for now
+    $class->set_tag($tag);
 }
+
+
+#------------------------------------------------------------
+# private_tags
+#------------------------------------------------------------
+
+=item private_tags 
+
+I<Instance method.>
+Normally, HTML streams use a reference to a global table of tag
+information to determine how to do such things as auto-formatting,
+and modifications made to that table by C<set_tag> will
+affect everyone.
+
+However, if you want an HTML stream to have a private copy of that
+table to munge with, just send it this message after creating it.  
+Like this:
+
+    my $HTML = new HTML::Stream \*STDOUT;
+    $HTML->private_tags;
+
+Then, you can say stuff like:
+
+    $HTML->set_tag('PRE',   Newlines=>0);
+    $HTML->set_tag('BLINK', Newlines=>9);
+
+And it won't affect anyone else's I<auto-formatting> (although they will 
+possibly be able to use the BLINK tag method without a fatal
+exception C<:-(> ).
+
+Returns the self object.
+
+=cut
+
+sub private_tags {
+    my $self = shift;
+    my %newtags = %Tags;
+    $self->{Tags} = \%newtags;
+    $self;
+}
+
+#------------------------------------------------------------
+# set_tag 
+#------------------------------------------------------------
+
+=item set_tag TAG, [TAGINFO...]
+
+I<Class/instance method.>
+Accept the given TAG in the Chocolate Interface, and (if TAGINFO
+is given) alter its characteristics when being output.
+
+=over 4
+
+=item *
+
+B<If invoked as a class method,> this alters the "master tag table",
+and allows a new tag to be supported via an autoloaded method:
+
+     HTML::Stream->set_tag('MARQUEE', Newlines=>9);
+
+Once you do this, I<all> HTML streams you open from then on 
+will allow that tag to be output in the chocolate interface.
+
+=item *
+
+B<If invoked as an instance method,> this alters the "tag table" referenced
+by that HTML stream, usually for the purpose of affecting things like
+the auto-formatting on that HTML stream.  
+
+B<Warning:> by default, an HTML stream just references the "master tag table" 
+(this makes C<new()> more efficient), so I<by default, the 
+instance method will behave exactly like the class method.>
+
+     my $HTML = new HTML::Stream \*STDOUT;
+     $HTML->set_tag('BLINK', Newlines=>0);  # changes it for others!
+
+If you want to diddle with I<one> stream's auto-formatting I<only,> 
+you'll need to give that stream its own I<private> tag table.  Like this:
+
+     my $HTML = new HTML::Stream \*STDOUT;
+     $HTML->private_tags;
+     $HTML->set_tag('BLINK', Newlines=>0);  # doesn't affect other streams
+
+B<Note:> this will still force an default entry for BLINK in the I<master> 
+tag table: otherwise, we'd never know that it was legal to AUTOLOAD a 
+BLINK method.   However, it will only alter the I<characteristics> of the 
+BLINK tag (like auto-formatting) in the I<object's> tag table.
+
+=back
+
+The TAGINFO, if given, is a set of key=>value pairs with the following 
+possible keys:
+
+=over 4
+
+=item Newlines
+
+Assumed to be a number which encodes how newlines are to be output 
+before/after a tag.   The value is the logical OR (or sum) of a set of flags:
+
+     0x01    newline before <TAG>         .<TAG>.     .</TAG>.    
+     0x02    newline after <TAG>          |     |     |      |
+     0x04    newline before </TAG>        1     2     4      8
+     0x08    newline after </TAG>    
+
+Hence, to output BLINK environments which are preceded/followed by newlines:
+
+     set_tag HTML::Stream 'BLINK', Newlines=>9;
+
+=back
+
+Returns the self object on success.
+
+=cut
+
+sub set_tag {
+    my ($self, $tag, %params) = @_;
+    $tag = uc($tag);                           # it's GOT to be uppercase!!!
+
+    # Force it to BE in the MASTER tag table, regardless:
+    defined($Tags{$tag}) or $Tags{$tag} = 0;       # default value
+
+    # Determine what table we ALTER, and force membership in that table:
+    my $tags = (ref($self) ? $self->{Tags} : \%Tags);
+    defined($tags->{$tag}) or $tags->{$tag} = 0;   # default value
+
+    # Now, set selected characteristics in that table:
+    if (defined($params{Newlines})) {
+	$tags->{$tag} = ($params{Newlines} || 0);
+    }
+    $self;
+}
+
+#------------------------------------------------------------
+# tags
+#------------------------------------------------------------
+
+=item tags 
+
+I<Class/instance method.>
+Returns an unsorted list of all tags in the class/instance tag table 
+(see C<set_tag> for class/instance method differences).
+
+=cut
+
+sub tags {
+    my $self = shift;
+    return (keys %{ref($self) ? $self->{Tags} : \%Tags});
+}
+
 
 #------------------------------------------------------------
 # AUTOLOAD
@@ -903,29 +1266,34 @@ sub AUTOLOAD {
     my $tag;
     ($tag = $funcname) =~ s/^_//;     # get rid of leading "_"
 
-    # If it's a tag method...
+    # If it's a tag method that's been approved in the master table...
     if (defined($Tags{$tag})) {
 
 	# A begin-tag, like "IMG"...
 	if ($funcname !~ /^_/) {     
-	    my $BEFORE = ($Tags{$tag} & 1 ? '"\n",' : '');
-	    my $AFTER  = ($Tags{$tag} & 2 ? ',"\n"' : '');
 	    eval <<EOF;
             sub HTML::Stream::$funcname { 
 		my \$self = shift; 
-                \$self->{OUT}->print($BEFORE html_tag('$tag',\@_) $AFTER);
+		\$self->{OUT}->print("\n") if (\$self->{Tags}{'$tag'} & 1 and
+					       \$self->{Flags} & $F_NEWLINE);
+                \$self->{OUT}->print(html_tag('$tag',\@_));
+		\$self->{OUT}->print("\n") if (\$self->{Tags}{'$tag'} & 2 and
+					       \$self->{Flags} & $F_NEWLINE);
                 \$self;
             }
 EOF
 	}
         # An end-tag, like "_IMG"...
 	else { 
-            my $BEFORE = ($Tags{$tag} & 4 ? '"\n",' : '');
-            my $AFTER  = ($Tags{$tag} & 8 ? ',"\n"' : ''); 
 	    eval <<EOF;
             sub HTML::Stream::$funcname { 
-                \$_[0]->{OUT}->print($BEFORE "</$tag>" $AFTER);
-                \$_[0];
+		my \$self = shift; 
+		\$self->{OUT}->print("\n") if (\$self->{Tags}{'$tag'} & 4 and
+					       \$self->{Flags} & $F_NEWLINE);
+                \$self->{OUT}->print("</$tag>");
+		\$self->{OUT}->print("\n") if (\$self->{Tags}{'$tag'} & 8 and
+					       \$self->{Flags} & $F_NEWLINE);
+                \$self;
             }
 EOF
 	}
@@ -943,13 +1311,23 @@ EOF
 }
 
 
+=back
+
+=head1 SUBCLASSES
+
+=cut
+
+
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 # A small, private package for turning FileHandles into safe printables:
 
 package HTML::Stream::FileHandle;
+
+use strict;
 no strict 'refs';
+
 sub new {
     my ($class, $raw) = @_;
     bless \$raw, $class;
@@ -963,10 +1341,38 @@ sub print {
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-# A small, public package for outputting Latin-1 text:
+=head2 HTML::Stream::Latin1
+
+A small, public package for outputting Latin-1 markup.  Its
+default auto-escape function is C<LATIN_1>, which tries to output
+the mnemonic entity markup (e.g., C<&ccedil;>) for ISO-8859-1 characters.
+
+So using HTML::Stream::Latin1 like this:
+
+    use HTML::Stream;
+    
+    $HTML = new HTML::Stream::Latin1 \*STDOUT;
+    output $HTML "\253A right angle is 90\260, \277No?\273\n";
+
+Prints this:
+
+    &laquo;A right angle is 90&deg;, &iquest;No?&raquo;
+
+Instead of what HTML::Stream would print, which is this:
+
+    &#171;A right angle is 90&#176;, &#191;No?&#187;
+
+B<Warning:> a lot of Latin-1 HTML markup is not recognized by older 
+browsers (e.g., Netscape 2.0).  Consider using HTML::Stream; it will output 
+the decimal entities which currently seem to be more "portable".
+
+B<Note:> using this class "requires" that you have HTML::Entities.
+
+=cut
 
 package HTML::Stream::Latin1;
 
+use strict;
 use vars qw(@ISA);
 @ISA = qw(HTML::Stream);
 
@@ -974,18 +1380,141 @@ use vars qw(@ISA);
 sub new {
     my $class = shift;
     my $self = HTML::Stream->new(@_);
-    $self->autoescape(\&escape_latin_1);
+    $self->auto_escape('LATIN_1');
     bless $self, $class;
 }
 
-# Utility for autoescaping Latin-1 text:
-sub escape_latin_1 {
-    my $text = shift;
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-    $text = HTML::Stream::escape_all($text);   # start with default
-    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
-    $text;
-}
+=head1 PERFORMANCE
+
+Slower than I'd like.  Both the output() method and the various "tag" 
+methods seem to run about 5 times slower than the old 
+just-hardcode-the-darn stuff approach.  That is, in general, this:
+
+    ### Approach #1...
+    tag  $HTML 'A', HREF=>"$href";
+    tag  $HTML 'IMG', SRC=>"logo.gif", ALT=>"LOGO";
+    text $HTML $caption;
+    tag  $HTML '_A';
+    text $HTML $a_lot_of_text;
+
+And this:
+
+    ### Approach #2...
+    output $HTML [A, HREF=>"$href"], 
+	         [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
+		 $caption,
+		 [_A];
+    output $HTML $a_lot_of_text;
+
+And this:
+
+    ### Approach #3...
+    $HTML -> A(HREF=>"$href")
+	  -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
+	  -> t($caption)
+	  -> _A
+          -> t($a_lot_of_text);
+
+Each run about 5x slower than this:
+
+    ### Approach #4...
+    print '<A HREF="', html_escape($href), '>',
+          '<IMG SRC="logo.gif" ALT="LOGO">',
+  	  html_escape($caption),
+          '</A>';
+    print html_escape($a_lot_of_text);
+
+Of course, I'd much rather use any of first three I<(especially #3)> 
+if I had to get something done right in a hurry.  Or did you not notice
+the typo in approach #4?  C<;-)>
+
+(BTW, thanks to Benchmark:: for allowing me to... er... benchmark stuff.)
+
+
+=head1 WHY IN THE WORLD DID I WRITE THIS?
+
+I was just mucking about with different ways of generating large
+HTML documents, seeing which ways I liked the most/least.
+
+
+=head1 CHANGE LOG
+
+=over 4
+
+=item Version 1.31
+
+B<NEW TOOL for generating Perl code which uses HTML::Stream!> 
+Check yor toolkit for B<html2perlstream>.
+
+Added built-in support for escaping 8-bit characters.
+
+Added C<LATIN_1> auto-escape, which uses HTML::Entities to generate
+mnemonic entities.  This is now the default method for HTML::Stream::Latin1.
+
+Added C<auto_format(),> 
+so you can now turn auto-formatting off/on.
+
+Added C<private_tags()>, 
+so it is now possible for HTML streams to each have their own "private"
+copy of the %Tags table, for use by C<set_tag()>.
+
+Added C<set_tag()>.  The tags tables may now be modified dynamically so 
+as to change how formatting is done on-the-fly.  This will hopefully not
+compromise the efficiency of the chocolate interface (until now,
+the formatting was compiled into the method itself), and I<will> add
+greater flexibility for more-complex programs.
+
+Added POD documentation for all subroutines in the public interface.
+
+
+=item Version 1.29
+
+Added terminating newline to comment().
+I<Thanks to John D Groenveld for the suggestion and the patch.>
+
+
+=item Version 1.27
+
+Added built-in HTML::Stream::Latin1, which does a very simple encoding
+of all characters above ASCII 127.
+
+Fixed bug in accept_tag(), where 'my' variable was shadowing argument.
+I<Thanks to John D Groenveld for the bug report and the patch.>
+
+
+=item Version 1.26 
+
+Start of history.
+
+=back
+
+
+=head1 VERSION
+
+$Revision: 1.32 $
+
+
+=head1 ACKNOWLEDGEMENTS
+
+Warmest thanks to...
+
+    John Buckman           For suggesting that I write an "html2perlstream",
+                           and inspiring me to look at supporting Latin-1.
+    Tony Cebzanov          For suggesting that I write an "html2perlstream"
+    John D Groenveld       Bug reports, patches, and suggestions
+    B. K. Oxley (binkley)  For suggesting the support of "writing to strings"
+                           which became the "printable" interface.
+
+=head1 AUTHOR
+
+Eryq, eryq@enteract.com or eryq@rhine.gsfc.nasa.gov or thereabouts.
+
+Enjoy.
+
+=cut
 
 #------------------------------------------------------------
 1;
