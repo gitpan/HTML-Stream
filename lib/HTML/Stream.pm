@@ -5,13 +5,7 @@ package HTML::Stream;
 HTML::Stream - HTML output stream class, and some markup utilities
 
 
-=head1 DESCRIPTION
-
-The B<HTML::Stream> module provides you with an object-oriented
-(and subclassable) way of outputting HTML.  Basically, you open up 
-an "HTML stream" on an existing filehandle, and then do all of your  
-output to the HTML stream.  You can intermix HTML-stream-output and 
-ordinary-print-output, if you like.
+=head1 SYNOPSIS
 
 Here's small sample of some of the non-OO ways you can use this module:
 
@@ -48,6 +42,15 @@ And some of the OO ways as well:
                    [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
                    $caption,
                    [_A];
+
+
+=head1 DESCRIPTION
+
+The B<HTML::Stream> module provides you with an object-oriented
+(and subclassable) way of outputting HTML.  Basically, you open up 
+an "HTML stream" on an existing filehandle, and then do all of your  
+output to the HTML stream.  You can intermix HTML-stream-output and 
+ordinary-print-output, if you like.
 
 There's even a small built-in subclass, B<HTML::Stream::Latin1>, which can
 handle Latin-1 input right out of the box.   But all in good time...
@@ -428,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.42 $, 10;
+$VERSION = substr q$Revision: 1.44 $, 10;
 
 
 
@@ -1459,6 +1462,10 @@ HTML documents, seeing which ways I liked the most/least.
 
 =over 4
 
+=item Version 1.44
+
+Win95 install (5.004) now works.
+Added SYNOPSIS to POD.
 
 =item Version 1.41
 
@@ -1535,7 +1542,7 @@ Start of history.
 
 =head1 VERSION
 
-$Revision: 1.42 $
+$Revision: 1.44 $
 
 
 =head1 ACKNOWLEDGEMENTS

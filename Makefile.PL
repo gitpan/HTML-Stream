@@ -6,8 +6,7 @@ use ExtUtils::MakeMaker;
 #------------------------------------------------------------
 
 my $POD2HTML = "perl -I ~/dev/perl/podpeople/lib ~/dev/perl/podpeople/bin/pod2coolhtml";
-my @EXES = <bin/html2perlstream>;     # executables
-my @MODS = <lib/HTML/*.pm>;           # modules
+my @EXES = qw(bin/html2perlstream);     # executables
 
 #------------------------------------------------------------
 # Distribution stuff:
@@ -28,7 +27,7 @@ WriteMakefile(
 	      NAME         => 'HTML::Stream',
 	      VERSION_FROM => "lib/HTML/Stream.pm",
 	      DISTNAME     => "HTML-Stream",
-	      EXE_FILES    => [@EXES],
+###	      EXE_FILES    => \@EXES,        ### makes Win32 MakeMaker mad :-(
 	      'dist'       => {
 		  PREOP    => $DIST_PREOP,
 		  COMPRESS => 'gzip',
