@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.49 $, 10;
+$VERSION = substr q$Revision: 1.51 $, 10;
 
 
 
@@ -1448,12 +1448,19 @@ the typo in approach #4?  C<;-)>
 
 =head1 VERSION
 
-$Id: Stream.pm,v 1.49 2000/08/16 05:15:43 eryq Exp $
+$Id: Stream.pm,v 1.51 2001/08/17 00:51:28 eryq Exp $
 
 
 =head1 CHANGE LOG
 
 =over 4
+
+
+=item Version 1.51   (2001/08/16)
+
+No real changes to code; just improved documentation,
+and removed HTML::Entities and HTML::Parser from ./etc
+at CPAN's request.
 
 
 =item Version 1.47   (2000/06/10)
@@ -1558,8 +1565,11 @@ Warmest thanks to...
 
 =head1 AUTHOR
 
-Eryq, F<eryq@zeegee.com>.
-President, Zero G Inc. (F<http://www.zeegee.com>).
+Eryq (F<eryq@zeegee.com>).
+President, ZeeGee Software Inc. (F<http://www.zeegee.com>).
+
+Go to F<http://www.zeegee.com> for the latest downloads
+and on-line documentation for this module.
 
 Enjoy.
 

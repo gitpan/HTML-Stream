@@ -1,48 +1,87 @@
 <HTML>
 <HEAD>
-  <TITLE>HTML::Stream</TITLE>
+  <TITLE>HTML::Stream 1.51</TITLE>
 </HEAD>
 <BODY 
        bgcolor="#FFFFFF" link="#CC3366" vlink="#993366" alink="#FF6666">
-<FONT FACE="sans-serif" SIZE=-1><A HREF="http://www.zeegee.com" TARGET="_top"><IMG SRC="icons/zeegee.gif" ALT="ZeeGee Software" ALIGN="RIGHT" BORDER="0"></A><A NAME="__TOP__"><H1>HTML::Stream</H1>
+<FONT FACE="sans-serif" SIZE=-1><A HREF="http://www.zeegee.com" TARGET="_top"><IMG SRC="icons/zeegee.gif" ALT="ZeeGee Software" ALIGN="RIGHT" BORDER="0"></A><A NAME="__TOP__"><H1>HTML::Stream 1.51</H1>
 </A><UL>
-<LI> <A HREF="#NAME">NAME</A>
-<LI> <A HREF="#SYNOPSIS">SYNOPSIS</A>
-<LI> <A HREF="#DESCRIPTION">DESCRIPTION</A>
-<LI> <A HREF="#INTRODUCTION_the_Neapolitan_dessert_special">INTRODUCTION (the Neapolitan dessert special)</A>
+<LI> <A NAME="menu:NAME"><A HREF="#NAME">NAME</A></A>
+<LI> <A NAME="menu:SYNOPSIS"><A HREF="#SYNOPSIS">SYNOPSIS</A></A>
+<LI> <A NAME="menu:DESCRIPTION"><A HREF="#DESCRIPTION">DESCRIPTION</A></A>
+<LI> <A NAME="menu:INTRODUCTION_the_Neapolitan_dessert_special"><A HREF="#INTRODUCTION_the_Neapolitan_dessert_special">INTRODUCTION (the Neapolitan dessert special)</A></A>
 <UL>
-<LI> <A HREF="#Function_interface">Function interface</A>
-<LI> <A HREF="#OO_interface_vanilla">OO interface, vanilla</A>
-<LI> <A HREF="#OO_interface_chocolate">OO interface, chocolate</A>
-<LI> <A HREF="#OO_interface_with_whipped_cream">OO interface, with whipped cream</A>
-<LI> <A HREF="#OO_interface_strawberry">OO interface, strawberry</A>
+<LI> <A NAME="menu:Function_interface"><A HREF="#Function_interface">Function interface</A></A>
+<LI> <A NAME="menu:OO_interface_vanilla"><A HREF="#OO_interface_vanilla">OO interface, vanilla</A></A>
+<LI> <A NAME="menu:OO_interface_chocolate"><A HREF="#OO_interface_chocolate">OO interface, chocolate</A></A>
+<LI> <A NAME="menu:OO_interface_with_whipped_cream"><A HREF="#OO_interface_with_whipped_cream">OO interface, with whipped cream</A></A>
+<LI> <A NAME="menu:OO_interface_strawberry"><A HREF="#OO_interface_strawberry">OO interface, strawberry</A></A>
 </UL>
-<LI> <A HREF="#ADVANCED_TOPICS">ADVANCED TOPICS</A>
+<LI> <A NAME="menu:ADVANCED_TOPICS"><A HREF="#ADVANCED_TOPICS">ADVANCED TOPICS</A></A>
 <UL>
-<LI> <A HREF="#Auto-formatting_and_inserting_newlines">Auto-formatting and inserting newlines</A>
-<LI> <A HREF="#Entities">Entities</A>
-<LI> <A HREF="#Auto-escaping_changing_the_way_text_is_escaped">Auto-escaping: changing the way text is escaped</A>
-<LI> <A HREF="#Outputting_HTML_to_things_besides_filehandles">Outputting HTML to things besides filehandles</A>
-<LI> <A HREF="#Subclassing">Subclassing</A>
+<LI> <A NAME="menu:Auto-formatting_and_inserting_newlines"><A HREF="#Auto-formatting_and_inserting_newlines">Auto-formatting and inserting newlines</A></A>
+<LI> <A NAME="menu:Entities"><A HREF="#Entities">Entities</A></A>
+<LI> <A NAME="menu:Auto-escaping_changing_the_way_text_is_escaped"><A HREF="#Auto-escaping_changing_the_way_text_is_escaped">Auto-escaping: changing the way text is escaped</A></A>
+<LI> <A NAME="menu:Outputting_HTML_to_things_besides_filehandles"><A HREF="#Outputting_HTML_to_things_besides_filehandles">Outputting HTML to things besides filehandles</A></A>
+<LI> <A NAME="menu:Subclassing"><A HREF="#Subclassing">Subclassing</A></A>
 </UL>
-<LI> <A HREF="#PUBLIC_INTERFACE">PUBLIC INTERFACE</A>
+<LI> <A NAME="menu:PUBLIC_INTERFACE"><A HREF="#PUBLIC_INTERFACE">PUBLIC INTERFACE</A></A>
 <UL>
-<LI> <A HREF="#Functions">Functions</A>
-<LI> <A HREF="#Vanilla">Vanilla</A>
-<LI> <A HREF="#Strawberry">Strawberry</A>
-<LI> <A HREF="#Chocolate">Chocolate</A>
-</UL>
-<LI> <A HREF="#SUBCLASSES">SUBCLASSES</A>
+<LI> <A NAME="menu:Functions"><A HREF="#Functions">Functions</A></A>
 <UL>
-<LI> <A HREF="#HTML_Stream_Latin1">HTML::Stream::Latin1</A>
+<LI> <A NAME="menu:item:html_escape_TEXT"><A HREF="#item:html_escape_TEXT">html_escape TEXT</A></A>
+<LI> <A NAME="menu:item:html_tag_TAG_PARAM_VALUE"><A HREF="#item:html_tag_TAG_PARAM_VALUE">html_tag TAG [, PARAM=&gt;VALUE, ...]</A></A>
+<LI> <A NAME="menu:item:html_unescape_TEXT"><A HREF="#item:html_unescape_TEXT">html_unescape TEXT</A></A>
+<LI> <A NAME="menu:item:html_unmarkup_TEXT"><A HREF="#item:html_unmarkup_TEXT">html_unmarkup TEXT</A></A>
 </UL>
-<LI> <A HREF="#PERFORMANCE">PERFORMANCE</A>
-<LI> <A HREF="#VERSION">VERSION</A>
-<LI> <A HREF="#CHANGE_LOG">CHANGE LOG</A>
-<LI> <A HREF="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</A>
-<LI> <A HREF="#AUTHOR">AUTHOR</A>
+<LI> <A NAME="menu:Vanilla"><A HREF="#Vanilla">Vanilla</A></A>
+<UL>
+<LI> <A NAME="menu:item:new_PRINTABLE"><A HREF="#item:new_PRINTABLE">new [PRINTABLE] </A></A>
+<LI> <A NAME="menu:item:auto_escape_NAME_SUBREF"><A HREF="#item:auto_escape_NAME_SUBREF">auto_escape [NAME|SUBREF]</A></A>
+<LI> <A NAME="menu:item:auto_format_ONOFF"><A HREF="#item:auto_format_ONOFF">auto_format ONOFF</A></A>
+<LI> <A NAME="menu:item:comment_COMMENT"><A HREF="#item:comment_COMMENT">comment COMMENT</A></A>
+<LI> <A NAME="menu:item:ent_ENTITY"><A HREF="#item:ent_ENTITY">ent ENTITY</A></A>
+<LI> <A NAME="menu:item:io"><A HREF="#item:io">io</A></A>
+<LI> <A NAME="menu:item:nl_COUNT"><A HREF="#item:nl_COUNT">nl [COUNT]</A></A>
+<LI> <A NAME="menu:item:tag_TAGNAME_PARAM_VALUE"><A HREF="#item:tag_TAGNAME_PARAM_VALUE">tag TAGNAME [, PARAM=&gt;VALUE, ...]</A></A>
+<LI> <A NAME="menu:item:text_TEXT"><A HREF="#item:text_TEXT">text TEXT...</A></A>
+<LI> <A NAME="menu:item:text_nbsp_TEXT"><A HREF="#item:text_nbsp_TEXT">text_nbsp TEXT...</A></A>
 </UL>
-</A>
+<LI> <A NAME="menu:Strawberry"><A HREF="#Strawberry">Strawberry</A></A>
+<UL>
+<LI> <A NAME="menu:item:output_ITEM_ITEM"><A HREF="#item:output_ITEM_ITEM">output ITEM,...,ITEM</A></A>
+</UL>
+<LI> <A NAME="menu:Chocolate"><A HREF="#Chocolate">Chocolate</A></A>
+<UL>
+<LI> <A NAME="menu:item:accept_tag_TAG"><A HREF="#item:accept_tag_TAG">accept_tag TAG</A></A>
+<LI> <A NAME="menu:item:private_tags"><A HREF="#item:private_tags">private_tags </A></A>
+<LI> <A NAME="menu:item:set_tag_TAG_TAGINFO"><A HREF="#item:set_tag_TAG_TAGINFO">set_tag TAG, [TAGINFO...]</A></A>
+<LI> <A NAME="menu:item:tags"><A HREF="#item:tags">tags </A></A>
+</UL>
+</UL>
+<LI> <A NAME="menu:SUBCLASSES"><A HREF="#SUBCLASSES">SUBCLASSES</A></A>
+<UL>
+<LI> <A NAME="menu:HTML_Stream_Latin1"><A HREF="#HTML_Stream_Latin1">HTML::Stream::Latin1</A></A>
+</UL>
+<LI> <A NAME="menu:PERFORMANCE"><A HREF="#PERFORMANCE">PERFORMANCE</A></A>
+<LI> <A NAME="menu:VERSION"><A HREF="#VERSION">VERSION</A></A>
+<LI> <A NAME="menu:CHANGE_LOG"><A HREF="#CHANGE_LOG">CHANGE LOG</A></A>
+<UL>
+<LI> <A NAME="menu:item:Version_1_51_2001_08_16"><A HREF="#item:Version_1_51_2001_08_16">Version 1.51   (2001/08/16)</A></A>
+<LI> <A NAME="menu:item:Version_1_47_2000_06_10"><A HREF="#item:Version_1_47_2000_06_10">Version 1.47   (2000/06/10)</A></A>
+<LI> <A NAME="menu:item:Version_1_45_1999_02_09"><A HREF="#item:Version_1_45_1999_02_09">Version 1.45   (1999/02/09)</A></A>
+<LI> <A NAME="menu:item:Version_1_44_1998_01_14"><A HREF="#item:Version_1_44_1998_01_14">Version 1.44   (1998/01/14)</A></A>
+<LI> <A NAME="menu:item:Version_1_41_1998_01_02"><A HREF="#item:Version_1_41_1998_01_02">Version 1.41   (1998/01/02)</A></A>
+<LI> <A NAME="menu:item:Version_1_37_1997_02_09"><A HREF="#item:Version_1_37_1997_02_09">Version 1.37   (1997/02/09)</A></A>
+<LI> <A NAME="menu:item:Version_1_32_1997_01_12"><A HREF="#item:Version_1_32_1997_01_12">Version 1.32   (1997/01/12)</A></A>
+<LI> <A NAME="menu:item:Version_1_29_1996_12_10"><A HREF="#item:Version_1_29_1996_12_10">Version 1.29   (1996/12/10)</A></A>
+<LI> <A NAME="menu:item:Version_1_27_1996_12_10"><A HREF="#item:Version_1_27_1996_12_10">Version 1.27   (1996/12/10)</A></A>
+<LI> <A NAME="menu:item:Version_1_26_1996_09_27"><A HREF="#item:Version_1_26_1996_09_27">Version 1.26   (1996/09/27)</A></A>
+</UL>
+<LI> <A NAME="menu:ACKNOWLEDGEMENTS"><A HREF="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</A></A>
+<LI> <A NAME="menu:AUTHOR"><A HREF="#AUTHOR">AUTHOR</A></A>
+</UL>
+
 
 <P><HR>
 <A NAME="NAME"><H2><A HREF="#__TOP__"><IMG SRC="icons/h1bullet.gif" ALT="Top" BORDER="0"></A> NAME</H2></A>
@@ -578,7 +617,7 @@ real HTML tags.
 
 
 <DL>
-<P><DT><B><A NAME="item:html_escape">html_escape TEXT</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:html_escape"><A NAME="item:html_escape_TEXT">html_escape TEXT</A></A></B></DT>
 <DD>
 Given a TEXT string, turn the text into valid HTML by escaping &quot;unsafe&quot; 
 characters.  Currently, the &quot;unsafe&quot; characters are 8-bit characters plus:
@@ -591,7 +630,7 @@ characters.  Currently, the &quot;unsafe&quot; characters are 8-bit characters p
 You may want to use the more-powerful <B>HTML::Entities::encode</B>
 function instead.
 
-<P><DT><B><A NAME="item:html_tag">html_tag TAG [, PARAM=&gt;VALUE, ...]</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:html_tag"><A NAME="item:html_tag_TAG_PARAM_VALUE">html_tag TAG [, PARAM=&gt;VALUE, ...]</A></A></B></DT>
 <DD>
 Return the text for a given TAG, possibly with parameters.
 As an efficiency hack, only the values are HTML-escaped currently:
@@ -601,7 +640,7 @@ it is assumed that the tag and parameters will already be safe.
 <P>For convenience and readability, you can say <CODE>_A</CODE> instead of <CODE>&quot;/A&quot;</CODE>
 for the first tag, if you're into barewords.
 
-<P><DT><B><A NAME="item:html_unescape">html_unescape TEXT</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:html_unescape"><A NAME="item:html_unescape_TEXT">html_unescape TEXT</A></A></B></DT>
 <DD>
 Remove angle-tag markup, and convert the standard ampersand-escapes
 (<CODE>lt</CODE>, <CODE>gt</CODE>, <CODE>amp</CODE>, <CODE>quot</CODE>, and <CODE>#ddd</CODE>) into ASCII characters.
@@ -612,7 +651,7 @@ You may want to use the more-powerful <B>HTML::Entities::decode</B>
 function instead: unlike this function, it can collapse entities
 like <CODE>copy</CODE> and <CODE>ccedil</CODE> into their Latin-1 byte values.
 
-<P><DT><B><A NAME="item:html_unmarkup">html_unmarkup TEXT</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:html_unmarkup"><A NAME="item:html_unmarkup_TEXT">html_unmarkup TEXT</A></A></B></DT>
 <DD>
 Remove angle-tag markup from TEXT, but do not convert ampersand-escapes.  
 Cheesy, but theoretically useful if you want to, say, incorporate
@@ -629,7 +668,7 @@ that the HTML might contain undesirable markup.
 
 
 <DL>
-<P><DT><B><A NAME="item:new">new [PRINTABLE]</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:new"><A NAME="item:new_PRINTABLE">new [PRINTABLE]</A></A></B></DT>
 <DD>
 <I>Class method.</I>
 Create a new HTML output stream.
@@ -639,7 +678,7 @@ Create a new HTML output stream.
 that responds to a <CODE>print()</CODE> message.
 If no PRINTABLE is given, does a select() and uses that.
 
-<P><DT><B><A NAME="item:auto_escape">auto_escape [NAME|SUBREF]</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:auto_escape"><A NAME="item:auto_escape_NAME_SUBREF">auto_escape [NAME|SUBREF]</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Set the auto-escape function for this HTML stream.
@@ -703,7 +742,7 @@ everything else safely escaped:
 <P>Returns the previously-installed function, in the manner of <CODE>select()</CODE>.
 No arguments just returns the currently-installed function.
 
-<P><DT><B><A NAME="item:auto_format">auto_format ONOFF</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:auto_format"><A NAME="item:auto_format_ONOFF">auto_format ONOFF</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Set the auto-formatting characteristics for this HTML stream.
@@ -714,13 +753,13 @@ The self object is returned.
 
 <P>Please use no other values; they are reserved for future use.
 
-<P><DT><B><A NAME="item:comment">comment COMMENT</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:comment"><A NAME="item:comment_COMMENT">comment COMMENT</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Output an HTML comment.
 As of 1.29, a newline is automatically appended.
 
-<P><DT><B><A NAME="item:ent">ent ENTITY</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:ent"><A NAME="item:ent_ENTITY">ent ENTITY</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Output an HTML entity.  For example, here's how you'd output a 
@@ -738,7 +777,7 @@ non-breaking space:
 
 <P><B>Warning:</B> this function assumes that the entity argument is legal.
 
-<P><DT><B><A NAME="item:io">io</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:io">io</A></B></DT>
 <DD>
 Return the underlying output handle for this HTML stream.
 All you can depend upon is that it is some kind of object
@@ -747,18 +786,18 @@ which responds to a print() message:
 <FONT SIZE=3 FACE="courier"><PRE>
     $HTML-&gt;io-&gt;print(&quot;This is not auto-escaped or nuthin!&quot;);
 </PRE></FONT>
-<P><DT><B><A NAME="item:nl">nl [COUNT]</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:nl"><A NAME="item:nl_COUNT">nl [COUNT]</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Output COUNT newlines.  If undefined, COUNT defaults to 1.
 
-<P><DT><B><A NAME="item:tag">tag TAGNAME [, PARAM=&gt;VALUE, ...]</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:tag"><A NAME="item:tag_TAGNAME_PARAM_VALUE">tag TAGNAME [, PARAM=&gt;VALUE, ...]</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Output a tag.  Returns the self object, to allow method chaining.
 You can say <CODE>_A</CODE> instead of <CODE>&quot;/A&quot;</CODE>, if you're into barewords.
 
-<P><DT><B><A NAME="item:text">text TEXT...</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:text"><A NAME="item:text_TEXT">text TEXT...</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Output some text.  You may abbreviate this method name as <CODE>t</CODE>:
@@ -769,7 +808,7 @@ Output some text.  You may abbreviate this method name as <CODE>t</CODE>:
 
 <P>Returns the self object, to allow method chaining.
 
-<P><DT><B><A NAME="item:text_nbsp">text_nbsp TEXT...</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:text_nbsp"><A NAME="item:text_nbsp_TEXT">text_nbsp TEXT...</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Output some text, but with all spaces output as non-breaking-space
@@ -792,7 +831,7 @@ characters:
 
 
 <DL>
-<P><DT><B><A NAME="item:output">output ITEM,...,ITEM</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:output"><A NAME="item:output_ITEM_ITEM">output ITEM,...,ITEM</A></A></B></DT>
 <DD>
 <I>Instance method.</I>
 Go through the items.  If an item is an arrayref, treat it like
@@ -812,7 +851,7 @@ is a text string, escape the text and output the result.  Like this:
 
 
 <DL>
-<P><DT><B><A NAME="item:accept_tag">accept_tag TAG</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:accept_tag"><A NAME="item:accept_tag_TAG">accept_tag TAG</A></A></B></DT>
 <DD>
 <I>Class method.</I>
 Declares that the tag is to be accepted as valid HTML (if it isn't already).
@@ -839,7 +878,7 @@ accept_tag() as well.
      #   *and*, set the characteristics of that tag.
      HTML::Stream-&gt;set_tag('MARQUEE', Newlines=&gt;9);
 </PRE></FONT>
-<P><DT><B><A NAME="item:private_tags">private_tags</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:private_tags">private_tags</A></B></DT>
 <DD>
 <I>Instance method.</I>
 Normally, HTML streams use a reference to a global table of tag
@@ -871,7 +910,7 @@ exception <CODE>:-(</CODE> ).
 
 <P>Returns the self object.
 
-<P><DT><B><A NAME="item:set_tag">set_tag TAG, [TAGINFO...]</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:set_tag"><A NAME="item:set_tag_TAG_TAGINFO">set_tag TAG, [TAGINFO...]</A></A></B></DT>
 <DD>
 <I>Class/instance method.</I>
 Accept the given TAG in the Chocolate Interface, and (if TAGINFO
@@ -951,7 +990,7 @@ before/after a tag.   The value is the logical OR (or sum) of a set of flags:
 
 <P>Returns the self object on success.
 
-<P><DT><B><A NAME="item:tags">tags</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:tags">tags</A></B></DT>
 <DD>
 <I>Class/instance method.</I>
 Returns an unsorted list of all tags in the class/instance tag table 
@@ -1068,7 +1107,7 @@ the typo in approach #4?  <CODE>;-)</CODE>
 <A NAME="VERSION"><H2><A HREF="#__TOP__"><IMG SRC="icons/h1bullet.gif" ALT="Top" BORDER="0"></A> VERSION</H2></A>
 
 
-<P>$Id: Stream.pm,v 1.49 2000/08/16 05:15:43 eryq Exp $
+<P>$Id: Stream.pm,v 1.51 2001/08/17 00:51:28 eryq Exp $
 
 
 
@@ -1078,20 +1117,26 @@ the typo in approach #4?  <CODE>;-)</CODE>
 
 
 <DL>
-<P><DT><B><A NAME="item:Version">Version 1.47   (2000/06/10)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_51_2001_08_16">Version 1.51   (2001/08/16)</A></A></B></DT>
+<DD>
+No real changes to code; just improved documentation,
+and removed HTML::Entities and HTML::Parser from ./etc
+at CPAN's request.
+
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_47_2000_06_10">Version 1.47   (2000/06/10)</A></A></B></DT>
 <DD>
 No real changes to code; just improved documentation.
 
-<P><DT><B><A NAME="item:Version">Version 1.45   (1999/02/09)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_45_1999_02_09">Version 1.45   (1999/02/09)</A></A></B></DT>
 <DD>
 Cleanup for Perl 5.005: removed duplicate typeglob assignments.
 
-<P><DT><B><A NAME="item:Version">Version 1.44   (1998/01/14)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_44_1998_01_14">Version 1.44   (1998/01/14)</A></A></B></DT>
 <DD>
 Win95 install (5.004) now works.
 Added SYNOPSIS to POD.
 
-<P><DT><B><A NAME="item:Version">Version 1.41   (1998/01/02)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_41_1998_01_02">Version 1.41   (1998/01/02)</A></A></B></DT>
 <DD>
 Removed $&amp; for efficiency.
 <I>Thanks, Andreas!</I>
@@ -1112,11 +1157,11 @@ This method may also be invoked as nbsp_text() as in the original patch,
 but that's sort of a private tip-of-the-hat to the patch author, and the 
 synonym may go away in the future.
 
-<P><DT><B><A NAME="item:Version">Version 1.37   (1997/02/09)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_37_1997_02_09">Version 1.37   (1997/02/09)</A></A></B></DT>
 <DD>
 No real change; just trying to make CPAN.pm happier.
 
-<P><DT><B><A NAME="item:Version">Version 1.32   (1997/01/12)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_32_1997_01_12">Version 1.32   (1997/01/12)</A></A></B></DT>
 <DD>
 <B>NEW TOOL for generating Perl code which uses HTML::Stream!</B> 
 Check your toolkit for <B>html2perlstream</B>.
@@ -1147,12 +1192,12 @@ greater flexibility for more-complex programs.
 
 <P>Added POD documentation for all subroutines in the public interface.
 
-<P><DT><B><A NAME="item:Version">Version 1.29   (1996/12/10)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_29_1996_12_10">Version 1.29   (1996/12/10)</A></A></B></DT>
 <DD>
 Added terminating newline to comment().
 <I>Thanks to John D Groenveld for the suggestion and the patch.</I>
 
-<P><DT><B><A NAME="item:Version">Version 1.27   (1996/12/10)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_27_1996_12_10">Version 1.27   (1996/12/10)</A></A></B></DT>
 <DD>
 Added built-in HTML::Stream::Latin1, which does a very simple encoding
 of all characters above ASCII 127.
@@ -1161,7 +1206,7 @@ of all characters above ASCII 127.
 <P>Fixed bug in accept_tag(), where 'my' variable was shadowing argument.
 <I>Thanks to John D Groenveld for the bug report and the patch.</I>
 
-<P><DT><B><A NAME="item:Version">Version 1.26   (1996/09/27)</A></B></DT>
+<P><DT><B><A HREF="#__TOP__"><IMG SRC="icons/itembullet.gif" ALT="Top" BORDER="0"></A> <A NAME="item:Version"><A NAME="item:Version_1_26_1996_09_27">Version 1.26   (1996/09/27)</A></A></B></DT>
 <DD>
 Start of history.
 
@@ -1189,15 +1234,19 @@ Start of history.
 <A NAME="AUTHOR"><H2><A HREF="#__TOP__"><IMG SRC="icons/h1bullet.gif" ALT="Top" BORDER="0"></A> AUTHOR</H2></A>
 
 
-<P>Eryq, <I><FILE><A HREF="mailto:eryq@zeegee.com">eryq@zeegee.com</A></FILE></I>.
-President, Zero G Inc. (<I><FILE><A HREF="http://www.zeegee.com">http://www.zeegee.com</A></FILE></I>).
+<P>Eryq (<I><FILE><A HREF="mailto:eryq@zeegee.com">eryq@zeegee.com</A></FILE></I>).
+President, ZeeGee Software Inc. (<I><FILE><A HREF="http://www.zeegee.com">http://www.zeegee.com</A></FILE></I>).
+
+
+<P>Go to <I><FILE><A HREF="http://www.zeegee.com">http://www.zeegee.com</A></FILE></I> for the latest downloads
+and on-line documentation for this module.
 
 
 <P>Enjoy.
 
 <P><HR>
 <ADDRESS><FONT SIZE=-1>
-Generated Thu Aug 17 01:22:14 2000 by cvu_pod2html
+Generated Fri Aug 17 10:47:53 2001 by cvu_pod2html
 </FONT></ADDRESS>
 </FONT></BODY>
 </HTML>

@@ -17,8 +17,6 @@ docs/index-menu.html
 docs/index.html
 docs/index.menu
 docs/latin.html
-etc/HTML/Entities.pm
-etc/HTML/Parser.pm
 etc/README
 examples/README
 examples/giggles

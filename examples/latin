@@ -1,3 +1,10 @@
+=head1 NAME
+
+latin - just some example code using HTML::Stream::Latin1
+
+=cut
+
+
 use HTML::Stream;
 
 accept_tag HTML::Stream 'BLORF';

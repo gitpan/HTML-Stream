@@ -1,4 +1,10 @@
 #!/usr/bin/perl
+=head1 NAME
+
+giggles - just some example code using HTML::Stream
+
+=cut
+
 
 BEGIN {
     unshift @INC, "..";

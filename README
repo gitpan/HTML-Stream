@@ -724,9 +724,13 @@ PERFORMANCE
     stuff.)
 
 VERSION
-    $Id: Stream.pm,v 1.49 2000/08/16 05:15:43 eryq Exp $
+    $Id: Stream.pm,v 1.51 2001/08/17 00:51:28 eryq Exp $
 
 CHANGE LOG
+    Version 1.51   (2001/08/16)
+        No real changes to code; just improved documentation, and removed
+        HTML::Entities and HTML::Parser from ./etc at CPAN's request.
+
     Version 1.47   (2000/06/10)
         No real changes to code; just improved documentation.
 
@@ -805,7 +809,11 @@ ACKNOWLEDGEMENTS
                                which became the "printable" interface.
 
 AUTHOR
-    Eryq, eryq@zeegee.com. President, Zero G Inc. (http://www.zeegee.com).
+    Eryq (eryq@zeegee.com). President, ZeeGee Software Inc.
+    (http://www.zeegee.com).
+
+    Go to http://www.zeegee.com for the latest downloads and on-line
+    documentation for this module.
 
     Enjoy.
 
