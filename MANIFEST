@@ -7,11 +7,13 @@ bin/html2perlstream
 docs/HTML/Stream.pm.html
 docs/HTML/icons/h1bullet.gif
 docs/HTML/icons/h2bullet.gif
+docs/HTML/icons/itembullet.gif
 docs/HTML/icons/zeegee.gif
 docs/giggles.html
 docs/html2perlstream.html
 docs/icons/h1bullet.gif
 docs/icons/h2bullet.gif
+docs/icons/itembullet.gif
 docs/icons/zeegee.gif
 docs/index-menu.html
 docs/index.html
