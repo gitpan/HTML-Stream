@@ -989,6 +989,22 @@ You may abbreviate this method name as <CODE>e</CODE>:
 
 <P>
 
+<DT><STRONG><A NAME="item_io">io
+
+</A></STRONG><DD>
+Return the underlying output handle for this HTML stream. All you can
+depend upon is that it is some kind of object which responds to a
+<CODE>print()</CODE> message:
+
+
+<P>
+
+<PRE>
+    $HTML-&gt;io-&gt;print(&quot;This is not auto-escaped or nuthin!&quot;);
+</PRE>
+
+<P>
+
 <DT><STRONG><A NAME="item_nl_count">nl [COUNT]
 
 </A></STRONG><DD>
@@ -1451,12 +1467,12 @@ documents, seeing which ways I liked the most/least.
 <HR>
 <H1><A NAME="change_log">CHANGE LOG</A></H1>
 <DL>
-<DT><STRONG><A NAME="item_version_131">Version 1.31
+<DT><STRONG><A NAME="item_version_132">Version 1.32
 
 </A></STRONG><DD>
 <STRONG>NEW TOOL for generating Perl code which uses HTML::Stream!</STRONG>
  
-Check yor toolkit for <STRONG>html2perlstream</STRONG>
+Check your toolkit for <STRONG>html2perlstream</STRONG>
 .
 
 
@@ -1542,7 +1558,7 @@ Start of history.
 <P>
 <HR>
 <H1><A NAME="version">VERSION</A></H1>
-$Revision: 1.32 $
+$Revision: 1.36 $
 
 
 <P>

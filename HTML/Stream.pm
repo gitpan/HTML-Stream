@@ -428,7 +428,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # Version...
-( $VERSION ) = '$Revision: 1.32 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.36 $ ' =~ /\$Revision:\s+([^\s]+)/;
          
 
 
@@ -443,10 +443,10 @@ $DASH_TO_SLASH = 1;
 
 # HTML escape sequences.  This bit was stolen from html_escape() in CGI::Base.
 my %Escape = (
-    '&' => 'amp', 
-    '>' => 'gt', 
-    '<' => 'lt', 
-    '"' => 'quot'
+    '&'    => 'amp', 
+    '>'    => 'gt', 
+    '<'    => 'lt', 
+    '"'    => 'quot',
 );
 my %Unescape;
 {my ($k, $v); $Unescape{$v} = $k while (($k, $v) = each %Escape);}
@@ -620,7 +620,7 @@ sub html_unescape {
 
     # Remove <tag> sequences.  KLUDGE!  I'll code a better way later.
     $text =~ s/\<[^>]+\>//g;
-    $text =~ s/\&([a-z]+);/$Unescape{$1}/gi;
+    $text =~ s/\&([a-z]+);/($Unescape{$1}||'')/gie;
     $text =~ s/\&\#(\d+);/pack("C",$1)/gie;
     return $text;
 }
@@ -869,6 +869,25 @@ sub ent {
 
 # Make a synonym:
 *e = \&ent;
+
+
+#------------------------------------------------------------
+# io
+#------------------------------------------------------------
+
+=item io
+
+Return the underlying output handle for this HTML stream.
+All you can depend upon is that it is some kind of object
+which responds to a print() message:
+
+    $HTML->io->print("This is not auto-escaped or nuthin!");
+
+=cut
+
+sub io {
+    shift->{OUT};
+}
 
 
 #------------------------------------------------------------
@@ -1444,10 +1463,10 @@ HTML documents, seeing which ways I liked the most/least.
 
 =over 4
 
-=item Version 1.31
+=item Version 1.32
 
 B<NEW TOOL for generating Perl code which uses HTML::Stream!> 
-Check yor toolkit for B<html2perlstream>.
+Check your toolkit for B<html2perlstream>.
 
 Added built-in support for escaping 8-bit characters.
 
@@ -1494,7 +1513,7 @@ Start of history.
 
 =head1 VERSION
 
-$Revision: 1.32 $
+$Revision: 1.36 $
 
 
 =head1 ACKNOWLEDGEMENTS
