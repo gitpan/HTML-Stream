@@ -7,11 +7,11 @@ HTML::Stream - HTML output stream class, and some markup utilities
 
 =head1 DESCRIPTION
 
-This module provides you with an object-oriented (and subclassable)
-way of outputting HTML.  Basically, you open up an "HTML stream"
-on an existing filehandle, and then do all of your output to the
-HTML stream (you can intermix HTML-stream-output and ordinary-print-output,
-if you like).
+The B<HTML::Stream> module provides you with an object-oriented 
+(and subclassable) way of outputting HTML.  Basically, you open up 
+an "HTML stream" on an existing filehandle, and then do all of your 
+output to the HTML stream.  You can intermix HTML-stream-output and 
+ordinary-print-output, if you like.
 
 Here's small sample of the different ways you can use this module:
 
@@ -38,6 +38,9 @@ Here's small sample of the different ways you can use this module:
                    "My caption!",
                    [_A];
       output $HTML $a_lot_of_text;
+
+There's even a small built-in subclass, B<HTML::Stream::Latin1>, which can
+handle Latin-1 input right out of the box.   But all in good time...
 
 
 =head2 Function interface
@@ -106,7 +109,7 @@ Or, if indirect-object syntax ain't your thang:
 
 As you've probably guessed:
 
-    ent()      Outputs an HTML entity, like C<&copy;>.
+    ent()      Outputs an HTML entity, like the &copy; or &lt; .
     tag()      Outputs an ordinary tag, like <A>, possibly with parameters.
                The parameters will all be HTML-escaped automatically.
     text()     Outputs some text, which will be HTML-escaped.
@@ -146,7 +149,7 @@ The C<"_"> was chosen for several reasons:
 (2) it doesn't produce much visual clutter to look at,
 (3) C<_TAG> looks a little like C</TAG> because of the straight line.
 
-=over 
+=over 4 
 
 =item *
 
@@ -248,20 +251,23 @@ Sooooooooo...
 =head2 Changing the way text is escaped
 
 The default "autoescape" behavior of an HTML stream can be a drag if
-you've got a lot character entities that you want to output.  So here's
-how you can use the C<autoescape()> method to change the way an
-HTML::Stream works at any time:
+you've got a lot character entities that you want to output, or if 
+you're using the Latin-1 character set, or some other input encoding.  
+Fortunately, you can use the C<autoescape()> method to change the 
+way a particular HTML::Stream works at any time.
+
+First, here's a couple of special invocations:
 
     $HTML->autoescape('ALL');        # escapes [<>"&] - the default
     $HTML->autoescape('NON_ENT');    # escapes [<>"] only, and not [&]
 
-If you can also install your own autoescape function (note that you might
-very well want to install it for just a little bit only, and then 
-de-install it):
+You can also install your own autoescape function (note
+that you might very well want to install it for just a little bit
+only, and then de-install it):
 
     sub my_autoescape {
         my $text = shift;
-	$text = HTML::Stream::html_escape_all($text);   # start with default
+	$text = HTML::Stream::escape_all($text);   # start with default
         $text =~ s/\(c\)/&copy;/ig;        # (C) becomes copyright
         $text =~ s/\\,(c)/\&$1cedil;/ig;   # \,c becomes a cedilla
  	$text;
@@ -276,6 +282,16 @@ de-install it):
     
     # Stop using my autoescape:
     $HTML->autoescape($oldesc);
+
+If you find yourself in a situation where you're doing this a lot,
+a better way is to create a B<subclass> of HTML::Stream which installs
+your custom function when constructed.  For example, see the 
+HTML::Stream::Latin1 example in this module, used as follows:
+
+    use HTML::Stream;
+    
+    $HTML = new HTML::Stream::Latin1 \*STDOUT;
+    output $HTML "\253A right angle is 90\260, \277No?\273\n";
 
 By the way, the following are equivalent:
 
@@ -401,9 +417,28 @@ I was just mucking about with different ways of generating large
 HTML documents, seeing which ways I liked the most/least.
 
 
+=head1 CHANGE LOG
+
+=over 4
+
+=item Version 1.27
+
+Added built-in HTML::Stream::Latin1, which does a very simple encoding
+of all characters above ASCII 127.
+
+Fixed bug in accept_tag(), where 'my' variable was shadowing argument.
+I<Thanks to John D Groenveld for the bug report and the patch.>
+
+=item Version 1.26 
+
+Start of history.
+
+=back
+
+
 =head1 VERSION
 
-$Revision: 1.24 $
+$Revision: 1.29 $
 
 
 =head1 AUTHOR
@@ -427,7 +462,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # Version...
-( $VERSION ) = '$Revision: 1.24 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.29 $ ' =~ /\$Revision:\s+([^\s]+)/;
          
 
 
@@ -847,7 +882,7 @@ my $TSOLO  = 0 | 2 | 0 | 0;
 
 sub accept_tag {
     my ($class, $tag) = @_;
-    my $tag = uc($tag);        # it's GOT to be uppercase!!!
+    $tag = uc($tag);           # it's GOT to be uppercase!!!
     unless ($Tags{$tag}) {
 	$Tags{$tag} = 0;       # no newlines
     }
@@ -924,6 +959,33 @@ sub print {
     print { $$self } @_;
 }
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+# A small, public package for outputting Latin-1 text:
+
+package HTML::Stream::Latin1;
+
+use vars qw(@ISA);
+@ISA = qw(HTML::Stream);
+
+# Constructor:
+sub new {
+    my $class = shift;
+    my $self = HTML::Stream->new(@_);
+    $self->autoescape(\&escape_latin_1);
+    bless $self, $class;
+}
+
+# Utility for autoescaping Latin-1 text:
+sub escape_latin_1 {
+    my $text = shift;
+
+    $text = HTML::Stream::escape_all($text);   # start with default
+    $text =~ s/[\x80-\xFF]/'&#'.unpack('C',$&).';'/eg;
+    $text;
+}
+
 #------------------------------------------------------------
 1;
-

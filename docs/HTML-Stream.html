@@ -24,6 +24,7 @@
 	</UL>
 	<LI><A HREF="#performance">PERFORMANCE</A>
 	<LI><A HREF="#why_in_the_world_did_i_write_thi">WHY IN THE WORLD DID I WRITE THIS?</A>
+	<LI><A HREF="#change_log">CHANGE LOG</A>
 	<LI><A HREF="#version">VERSION</A>
 	<LI><A HREF="#author">AUTHOR</A>
 </UL>
@@ -40,10 +41,11 @@ HTML::Stream - HTML output stream class, and some markup utilities
 <P>
 <HR>
 <H1><A NAME="description">DESCRIPTION</A></H1>
-This module provides you with an object-oriented (and subclassable) way of
+The <STRONG>HTML::Stream</STRONG>
+ module provides you with an object-oriented (and subclassable) way of
 outputting HTML. Basically, you open up an ``HTML stream'' on an existing
-filehandle, and then do all of your output to the HTML stream (you can
-intermix HTML-stream-output and ordinary-print-output, if you like).
+filehandle, and then do all of your output to the HTML stream. You can
+intermix HTML-stream-output and ordinary-print-output, if you like.
 
 
 <P>
@@ -86,6 +88,13 @@ Here's small sample of the different ways you can use this module:
                    [_A];
       output $HTML $a_lot_of_text;
 </PRE>
+
+<P>
+
+There's even a small built-in subclass, <STRONG>HTML::Stream::Latin1</STRONG>
+, which can handle Latin-1 input right out of the box. But all in good
+time...
+
 
 <P>
 
@@ -208,7 +217,7 @@ As you've probably guessed:
 <P>
 
 <PRE>
-    ent()      Outputs an HTML entity, like C&lt;&amp;copy;&gt;.
+    ent()      Outputs an HTML entity, like the &amp;copy; or &amp;lt; .
     tag()      Outputs an ordinary tag, like &lt;A&gt;, possibly with parameters.
                The parameters will all be HTML-escaped automatically.
     text()     Outputs some text, which will be HTML-escaped.
@@ -456,8 +465,14 @@ Sooooooooo...
 <HR>
 <H2><A NAME="changing_the_way_text_is_escaped">Changing the way text is escaped</A></H2>
 The default ``autoescape'' behavior of an HTML stream can be a drag if
-you've got a lot character entities that you want to output. So here's how
-you can use the <CODE>autoescape()</CODE> method to change the way an HTML::Stream works at any time:
+you've got a lot character entities that you want to output, or if you're
+using the Latin-1 character set, or some other input encoding. Fortunately,
+you can use the <CODE>autoescape()</CODE> method to change the way a particular HTML::Stream works at any time.
+
+
+<P>
+
+First, here's a couple of special invocations:
 
 
 <P>
@@ -469,9 +484,9 @@ you can use the <CODE>autoescape()</CODE> method to change the way an HTML::Stre
 
 <P>
 
-If you can also install your own autoescape function (note that you might
-very well want to install it for just a little bit only, and then
-de-install it):
+You can also install your own autoescape function (note that you might very
+well want to install it for just a little bit only, and then de-install
+it):
 
 
 <P>
@@ -479,7 +494,7 @@ de-install it):
 <PRE>
     sub my_autoescape {
         my $text = shift;
-	$text = HTML::Stream::html_escape_all($text);   # start with default
+	$text = HTML::Stream::escape_all($text);   # start with default
         $text =~ s/\(c\)/&amp;copy;/ig;        # (C) becomes copyright
         $text =~ s/\\,(c)/\&amp;$1cedil;/ig;   # \,c becomes a cedilla
  	$text;
@@ -498,6 +513,24 @@ de-install it):
     
     # Stop using my autoescape:
     $HTML-&gt;autoescape($oldesc);
+</PRE>
+
+<P>
+
+If you find yourself in a situation where you're doing this a lot, a better
+way is to create a <STRONG>subclass</STRONG>
+ of HTML::Stream which installs your custom function when constructed. For
+example, see the HTML::Stream::Latin1 example in this module, used as
+follows:
+
+
+<P>
+
+<PRE>
+    use HTML::Stream;
+    
+    $HTML = new HTML::Stream::Latin1 \*STDOUT;
+    output $HTML &quot;\253A right angle is 90\260, \277No?\273\n&quot;;
 </PRE>
 
 <P>
@@ -706,8 +739,40 @@ documents, seeing which ways I liked the most/least.
 
 <P>
 <HR>
+<H1><A NAME="change_log">CHANGE LOG</A></H1>
+<DL>
+<DT><STRONG><A NAME="item_version_127">Version 1.27
+
+</A></STRONG><DD>
+Added built-in HTML::Stream::Latin1, which does a very simple encoding of
+all characters above ASCII 127.
+
+
+<P>
+
+Fixed bug in <CODE>accept_tag(),</CODE> where 'my' variable was shadowing
+argument.
+<EM>Thanks to John D Groenveld for the bug report and the patch.</EM>
+
+
+
+
+
+<P>
+
+<DT><STRONG><A NAME="item_version_126">Version 1.26 
+
+</A></STRONG><DD>
+Start of history.
+
+
+<P>
+
+</DL>
+<P>
+<HR>
 <H1><A NAME="version">VERSION</A></H1>
-$Revision: 1.24 $
+$Revision: 1.29 $
 
 
 <P>
