@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.54 $, 10;
+$VERSION = substr q$Revision: 1.55 $, 10;
 
 
 
@@ -1028,23 +1028,43 @@ my $TSOLO  = 0 | 2 | 0 | 0;
 %Tags = 
     (
      A       => 0,
+     ABBR    => 0,
+     ACRONYM => 0,
      ADDRESS => $TBOTH,
      APPLET  => $TBOTH,
+     AREA    => $TELEM,
      B       => 0,
      BASE    => 0,
+    BASEFONT => $TBOTH,
+     BDO     => $TBOTH,
+     BIG     => 0,
+     BGSOUND => $TELEM,
+     BLINK   => 0,
   BLOCKQUOTE => $TBOTH,
      BODY    => $TBOTH,
+     BUTTON  => $TP,
      BR      => $TBR,
      CAPTION => $TTITLE,
      CENTER  => $TBOTH,
+     CITE    => 0,
      CODE    => 0,
+     COMMENT => $TBOTH,
+    COLGROUP => $TP,
+     COL     => $TP,
+     DEL     => 0,
+     DFN     => 0,
      DD      => $TLIST,
-     DIV     => $TOUTER,
+     DIR     => $TLIST,
+     DIV     => $TP,
      DL      => $TELEM,
      DT      => $TELEM,
      EM      => 0,
+     EMBED   => $TBOTH,
      FONT    => 0,
      FORM    => $TBOTH,
+    FIELDSET => $TBOTH,
+     FRAME   => $TBOTH,
+    FRAMESET => $TBOTH,
      H1      => $TTITLE,
      H2      => $TTITLE,
      H3      => $TTITLE,
@@ -1055,32 +1075,62 @@ my $TSOLO  = 0 | 2 | 0 | 0;
      HR      => $TBOTH,
      HTML    => $TBOTH,
      I       => 0,
+     IFRAME  => $TBOTH,
      IMG     => 0,
      INPUT   => 0,
+     INS     => 0,
      ISINDEX => 0,
+     KEYGEN  => $TBOTH,
+     KBD     => 0,
+     LABEL   => $TP,
+     LEGEND  => $TP,
      LI      => $TELEM,
      LINK    => 0,
+     LISTING => $TBOTH,
+     MAP     => $TBOTH,
+     MARQUEE => $TTITLE,
+     MENU    => $TLIST,
      META    => $TSOLO,
+     NEXTID  => $TBOTH,
+     NOBR    => $TFONT,
+     NOEMBED => $TBOTH,
+     NOFRAME => $TBOTH,
+    NOSCRIPT => $TBOTH,
      OBJECT  => 0,
      OL      => $TLIST, 
-     OPTION  => $TELEM, 
+     OPTION  => $TELEM,
+    OPTGROUP => $TELEM,
      P       => $TP,
+     PARAM   => $TP,
+   PLAINTEXT => $TBOTH,
      PRE     => $TOUTER,
+     Q       => 0,
+     SAMP    => 0,
+     SCRIPT  => $TBOTH,
      SELECT  => $TBOTH,
+     SERVER  => $TBOTH,
      SMALL   => 0,
+     SPAN    => 0,
      STRONG  => 0,
+     STRIKE  => 0,
+     STYLE   => 0,
      SUB     => 0,
      SUP     => 0,
      TABLE   => $TBOTH,
+     TBODY   => $TP,
      TD      => 0,
     TEXTAREA => 0,
+     TFOOT   => $TP,
      TH      => 0,
+     THEAD   => $TP,
      TITLE   => $TTITLE,
      TR      => $TOUTER,
      TT      => 0,
      U       => 0,
      UL      => $TLIST, 
      VAR     => 0,
+     WBR     => 0,
+     XMP     => 0,
      );
 
 
@@ -1448,12 +1498,20 @@ the typo in approach #4?  C<;-)>
 
 =head1 VERSION
 
-$Id: Stream.pm,v 1.54 2001/08/20 20:33:26 eryq Exp $
+$Id: Stream.pm,v 1.55 2003/10/28 dstaal Exp $
 
 
 =head1 CHANGE LOG
 
 =over 4
+
+=item Version 1.55   (2003/10/28)
+
+New maintainer: Daniel T. Staal.  No major changes in the code, except
+to complete the tag list to HTML 4.01 specifications. (With the
+exception of the 'S' tag, which I want to test, and is depreciated
+anyway.  Note that the DOCTYPE is not actually a HTML tag, and is not
+currently included.)
 
 
 =item Version 1.54   (2001/08/20)
@@ -1557,10 +1615,16 @@ Start of history.
 
 =back
 
+=head1 COPYRIGHT
+
+This program is free software.  You may copy or redistribute it under
+the same terms as Perl itself.
 
 =head1 ACKNOWLEDGEMENTS
 
 Warmest thanks to...
+
+    Eryq                   For writing the orginal version of this module.
 
     John Buckman           For suggesting that I write an "html2perlstream",
                            and inspiring me to look at supporting Latin-1.
@@ -1571,11 +1635,7 @@ Warmest thanks to...
 
 =head1 AUTHOR
 
-Eryq (F<eryq@zeegee.com>).
-President, ZeeGee Software Inc. (F<http://www.zeegee.com>).
-
-Go to F<http://www.zeegee.com> for the latest downloads
-and on-line documentation for this module.  
+Daniel T. Staal (F<DStaal@usa.net>).
 
 Enjoy.  Yell if it breaks.
 
