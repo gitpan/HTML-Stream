@@ -33,7 +33,6 @@ examples/giggles
 examples/latin
 examples/opts
 lib/HTML/Stream.pm
-t/ExtUtils/TBone.pm
 testin/README
 testin/test.html
 testin/test2.html
