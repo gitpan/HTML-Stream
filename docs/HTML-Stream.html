@@ -1,0 +1,637 @@
+    <HTML>
+
+    <HEAD>
+    <TITLE></TITLE>
+    </HEAD>
+
+    <BODY>
+
+<!-- INDEX BEGIN -->
+<UL>
+	<LI><A HREF="#name">NAME</A>
+	<LI><A HREF="#description">DESCRIPTION</A>
+	<UL>
+		<LI><A HREF="#function_interface">Function interface</A>
+		<LI><A HREF="#oo_interface_vanilla">OO interface, vanilla</A>
+		<LI><A HREF="#oo_interface_chocolate">OO interface, chocolate</A>
+		<LI><A HREF="#oo_interface_with_whipped_cream">OO interface, with whipped cream</A>
+		<LI><A HREF="#oo_interface_strawberry">OO interface, strawberry</A>
+		<LI><A HREF="#newlines">Newlines</A>
+		<LI><A HREF="#entities">Entities</A>
+		<LI><A HREF="#changing_the_way_text_is_escaped">Changing the way text is escaped</A>
+	</UL>
+	<LI><A HREF="#performance">PERFORMANCE</A>
+	<LI><A HREF="#why_in_the_world_did_i_write_thi">WHY IN THE WORLD DID I WRITE THIS?</A>
+	<LI><A HREF="#version">VERSION</A>
+	<LI><A HREF="#author">AUTHOR</A>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">NAME</A></H1>
+HTML::Stream - HTML output stream class, and some markup utilities
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="description">DESCRIPTION</A></H1>
+This module provides you with an object-oriented (and subclassable) way of
+outputting HTML. Basically, you open up an ``HTML stream'' on an existing
+filehandle, and then do all of your output to the HTML stream (you can
+intermix HTML-stream-output and ordinary-print-output, if you like).
+
+
+<P>
+
+Here's small sample of the different ways you can use this module:
+
+
+<P>
+
+<PRE>
+      use HTML::Stream;
+      $HTML = new HTML::Stream \*STDOUT;
+      
+      # The vanilla interface...
+      tag  $HTML 'A', HREF=&gt;&quot;$href&quot;;
+      tag  $HTML 'IMG', SRC=&gt;&quot;logo.gif&quot;, ALT=&gt;&quot;LOGO&quot;;
+      text $HTML &quot;My caption!&quot;;
+      tag  $HTML '_A';
+      text $HTML $a_lot_of_text;
+</PRE>
+
+<P>
+
+<PRE>
+      # The chocolate interface (with whipped cream)...
+      $HTML -&gt; A(HREF=&gt;&quot;$href&quot;)
+            -&gt; IMG(SRC=&gt;&quot;logo.gif&quot;, ALT=&gt;&quot;LOGO&quot;)
+            -&gt; t(&quot;My caption!&quot;)
+            -&gt; _A
+            -&gt; t($a_lot_of_text);
+</PRE>
+
+<P>
+
+<PRE>
+      # The strawberry interface...
+      output $HTML [A, HREF=&gt;&quot;$href&quot;], 
+                   [IMG, SRC=&gt;&quot;logo.gif&quot;, ALT=&gt;&quot;LOGO&quot;],
+                   &quot;My caption!&quot;,
+                   [_A];
+      output $HTML $a_lot_of_text;
+</PRE>
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="function_interface">Function interface</A></H2>
+Let's start out with the simple stuff. This module provides a collection of
+non-OO utility functions for escaping HTML text and producing HTML tags,
+like this:
+
+
+<P>
+
+<PRE>
+    use HTML::Stream qw(:funcs);        # imports functions from @EXPORT_OK
+    
+    print html_tag(A, HREF=&gt;$url);
+    print '&amp;copy; 1996 by', html_escape($myname), '!';
+    print html_tag('/A');
+</PRE>
+
+<P>
+
+By the way: that last line could be rewritten as:
+
+
+<P>
+
+<PRE>
+    print html_tag(_A);
+</PRE>
+
+<P>
+
+And if you need to get a parameter in your tag that doesn't have an
+associated value, supply the <EM>undefined</EM>
+ value (<EM>not</EM>
+ the empty string!):
+
+
+<P>
+
+<PRE>
+    print html_tag(TD, NOWRAP=&gt;undef, ALIGN=&gt;'LEFT');
+    
+         &lt;TD NOWRAP ALIGN=LEFT&gt;
+    
+    print html_tag(IMG, SRC=&gt;'logo.gif', ALT=&gt;'');
+    
+         &lt;IMG SRC=&quot;logo.gif&quot; ALT=&quot;&quot;&gt;
+</PRE>
+
+<P>
+
+There are also some routines for reversing the process, like:
+
+
+<P>
+
+<PRE>
+    $text = &quot;This &lt;i&gt;isn't&lt;/i&gt; &amp;quot;fun&amp;quot;...&quot;;    
+    print html_unmarkup($text);
+       
+         This isn't &amp;quot;fun&amp;quot;...
+      
+    print html_unescape($text);
+       
+         This isn't &quot;fun&quot;...
+</PRE>
+
+<P>
+
+<EM>Yeah, yeah, yeah</EM>
+, I hear you cry.  <EM>We've seen this stuff before.</EM>
+
+But wait! There's more...
+
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="oo_interface_vanilla">OO interface, vanilla</A></H2>
+Using the function interface can be tedious... so we also provide an <STRONG>"HTML output stream"</STRONG>
+ class. Messages to an instance of that class generally tell that stream to
+output some HTML. Here's the above example, rewritten using HTML streams:
+
+
+<P>
+
+<PRE>
+    use HTML::Stream;
+    $HTML = new HTML::Stream \*STDOUT;
+    
+    tag  $HTML 'A', HREF=&gt;$url;
+    ent  $HTML 'copy';
+    text $HTML &quot; 1996 by $myname!&quot;;
+    tag  $HTML '_A';
+</PRE>
+
+<P>
+
+Or, if indirect-object syntax ain't your thang:
+
+
+<P>
+
+<PRE>
+    $HTML-&gt;tag(A, HREF=&gt;$url);
+    $HTML-&gt;ent('copy');
+    $HTML-&gt;text(&quot; 1996 by $myname!&quot;);
+    $HTML-&gt;tag(_A);
+</PRE>
+
+<P>
+
+As you've probably guessed:
+
+
+<P>
+
+<PRE>
+    ent()      Outputs an HTML entity, like C&lt;&amp;copy;&gt;.
+    tag()      Outputs an ordinary tag, like &lt;A&gt;, possibly with parameters.
+               The parameters will all be HTML-escaped automatically.
+    text()     Outputs some text, which will be HTML-escaped.
+</PRE>
+
+<P>
+
+It you're <EM>not</EM>
+ using indirect-object syntax, you might prefer to use <CODE>t()</CODE> and <CODE>e()</CODE> instead of <CODE>text()</CODE> and <CODE>ent()</CODE>: they are absolutely identical... just shorter to type:
+
+
+<P>
+
+<PRE>
+    $HTML -&gt; tag(A, HREF=&gt;$url);
+    $HTML -&gt; e('copy');
+    $HTML -&gt; t(&quot; 1996 by $myname!&quot;);
+    $HTML -&gt; tag(_A);
+</PRE>
+
+<P>
+
+Now, it wouldn't be nice to give you those <CODE>text()</CODE> and <CODE>ent()</CODE> shortcuts without giving you one for <CODE>tag()</CODE>, would it? Of course not...
+
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="oo_interface_chocolate">OO interface, chocolate</A></H2>
+The known HTML tags are even given their own <STRONG>tag-methods,</STRONG>
+ compiled on demand... so the above could be written like this:
+
+
+<P>
+
+<PRE>
+    $HTML -&gt; A(HREF=&gt;$url);
+    $HTML -&gt; e('copy');
+    $HTML -&gt; t(&quot; 1996 by $myname!&quot;);
+    $HTML -&gt; _A;
+</PRE>
+
+<P>
+
+As you've probably guessed:
+
+
+<P>
+
+<PRE>
+    A(HREF=&gt;$url)   ==   tag(A, HREF=&gt;$url)   ==   &lt;A HREF=&quot;/the/url&quot;&gt;
+    _A              ==   tag(_A)              ==   &lt;/A&gt;
+</PRE>
+
+<P>
+
+All such ``tag-methods'' use the tagname in <EM>all-uppercase</EM>
+. A <CODE>"_"</CODE> prefix on any tag-method means that an end-tag is desired. The <CODE>"_"</CODE> was chosen for several reasons: (1) it's short and easy to type, (2) it
+doesn't produce much visual clutter to look at, (3) <CODE>_TAG</CODE> looks a little like <CODE>/TAG</CODE> because of the straight line.
+
+
+<P>
+
+<UL>
+<LI><STRONG></STRONG>
+<EM>I know, I know... it looks like a private method.  You get used to it.  
+Really.</EM>
+
+
+
+
+
+<P>
+
+</UL>
+I should stress that this module will only auto-create tag methods for <STRONG>known</STRONG>
+ HTML tags. So you're protected from typos like this (which will cause a
+fatal exception at run-time):
+
+
+<P>
+
+<PRE>
+    $HTML -&gt; IMGG(SRC=&gt;$src);
+</PRE>
+
+<P>
+
+(You're not yet protected from illegal tag parameters, but it's a start,
+ain't it?)
+
+
+<P>
+
+If you need to make a tag known (sorry, but this is currently a 
+<EM>global</EM>
+ operation, and not stream-specific), do this:
+
+
+<P>
+
+<PRE>
+    HTML::Stream-&gt;accept_tag('MARQUEE');     # for you MSIE fans...
+</PRE>
+
+<P>
+
+<STRONG>There is no corresponding "reject_tag"</STRONG>
+. I thought and thought about it, and could not convince myself that such a
+method would do anything more useful that cause other people's modules to
+suddenly stop working because some bozo function decided to reject the <CODE>FONT</CODE> tag.
+
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="oo_interface_with_whipped_cream">OO interface, with whipped cream</A></H2>
+In the grand tradition of C++, output method chaining is supported in both
+the Vanilla Interface and the Chocolate Interface. So you can (and probably
+should) say:
+
+
+<P>
+
+<PRE>
+    $HTML -&gt; A(HREF=&gt;$url) 
+          -&gt; e('copy') -&gt; t(&quot;1996 by $myname!&quot;) 
+          -&gt; _A;
+</PRE>
+
+<P>
+
+But wait... there's one more flavor...
+
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="oo_interface_strawberry">OO interface, strawberry</A></H2>
+I was jealous of the compact syntax of HTML::AsSubs, but I didn't want to
+worry about clogging the namespace with a lot of functions like
+<CODE>p(),</CODE> <CODE>a(),</CODE> etc. (especially when markup-functions
+like <CODE>tr()</CODE> conflict with existing Perl functions). So I came up
+with this:
+
+
+<P>
+
+<PRE>
+    output $HTML [A, HREF=&gt;$url], &quot;Here's my $caption&quot;, [_A];
+</PRE>
+
+<P>
+
+Conceptually, arrayrefs are sent to <CODE>html_tag()</CODE>, and strings to 
+<CODE>html_escape()</CODE>.
+
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="newlines">Newlines</A></H2>
+As special cases, some tag-methods (like <CODE>P</CODE>, <CODE>_P</CODE>, and <CODE>BR</CODE>) all cause newlines to be output before and/or after the tag, so your HTML
+is a little more readable when you do stuff like ``view source'' on a
+browser. So:
+
+
+<P>
+
+<PRE>
+    $HTML -&gt; HTML 
+          -&gt; HEAD  
+          -&gt; TITLE -&gt; t(&quot;Hello!&quot;) -&gt; _TITLE 
+          -&gt; _HEAD
+          -&gt; BODY(BGCOLOR=&gt;'#808080');
+</PRE>
+
+<P>
+
+Actually produces:
+
+
+<P>
+
+<PRE>
+    &lt;HTML&gt;&lt;HTML&gt;
+    &lt;HEAD&gt;
+    &lt;TITLE&gt;Hello!&lt;/TITLE&gt;
+    &lt;/HEAD&gt;
+    &lt;BODY BGCOLOR=&quot;#808080&quot;&gt;
+</PRE>
+
+<P>
+
+(This will improve slightly as time goes on). You can also output newline
+explicitly via the special <CODE>nl</CODE> method in the Chocolate Interface:
+
+
+<P>
+
+<PRE>
+    $HTML-&gt;nl;     # one newline
+    $HTML-&gt;nl(6);  # six newlines
+</PRE>
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="entities">Entities</A></H2>
+As shown above, You can use the <CODE>ent()</CODE> (or <CODE>e()</CODE>) method to output an entity:
+
+
+<P>
+
+<PRE>
+    $HTML-&gt;t('Copyright ')-&gt;e('copy')-&gt;t(' 1996 by Me!');
+</PRE>
+
+<P>
+
+But this can be a pain, particularly for Europeans:
+
+
+<P>
+
+<PRE>
+    $HTML -&gt; t('Copyright ') 
+          -&gt; e('copy') 
+          -&gt; t(' 1996 by Fran') -&gt; e('ccedil') -&gt; t('ois, Inc.!');
+</PRE>
+
+<P>
+
+Sooooooooo...
+
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="changing_the_way_text_is_escaped">Changing the way text is escaped</A></H2>
+The default ``autoescape'' behavior of an HTML stream can be a drag if
+you've got a lot character entities that you want to output. So here's how
+you can use the <CODE>autoescape()</CODE> method to change the way an HTML::Stream works at any time:
+
+
+<P>
+
+<PRE>
+    $HTML-&gt;autoescape('ALL');        # escapes [&lt;&gt;&quot;&amp;] - the default
+    $HTML-&gt;autoescape('NON_ENT');    # escapes [&lt;&gt;&quot;] only, and not [&amp;]
+</PRE>
+
+<P>
+
+If you can also install your own autoescape function (note that you might
+very well want to install it for just a little bit only, and then
+de-install it):
+
+
+<P>
+
+<PRE>
+    sub my_autoescape {
+        my $text = shift;
+	$text = HTML::Stream::html_escape_all($text);   # start with default
+        $text =~ s/\(c\)/&amp;copy;/ig;        # (C) becomes copyright
+        $text =~ s/\\,(c)/\&amp;$1cedil;/ig;   # \,c becomes a cedilla
+ 	$text;
+    }
+</PRE>
+
+<P>
+
+<PRE>
+    # Start using my autoescape:
+    my $oldesc = $HTML-&gt;autoescape(\&amp;my_autoescape);      # use sub refs ONLY!
+    $HTML-&gt; ADDRESS;
+    $HTML-&gt; IMG(SRC=&gt;'logo.gif', ALT=&gt;'Fran\,cois, Inc');
+    output $HTML 'Copyright (C) 1996 by Fran\,cois, Inc.!';
+    $HTML-&gt;_ADDRESS;
+    
+    # Stop using my autoescape:
+    $HTML-&gt;autoescape($oldesc);
+</PRE>
+
+<P>
+
+By the way, the following are equivalent:
+
+
+<P>
+
+<PRE>
+    $HTML-&gt;autoescape('ALL')
+    $HTML-&gt;autoescape(\&amp;HTML::Stream::escape_all);
+</PRE>
+
+<P>
+
+No arguments to <CODE>autoescape()</CODE> returns the current autoescape function.
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="performance">PERFORMANCE</A></H1>
+Slower than I'd like. Both the <CODE>output()</CODE> method and the various
+``tag'' methods seem to run about 5 times slower than the old
+just-hardcode-the-darn stuff approach. That is, in general, this:
+
+
+<P>
+
+<PRE>
+    ### Approach #1...
+    tag  $HTML 'A', HREF=&gt;&quot;$href&quot;;
+    tag  $HTML 'IMG', SRC=&gt;&quot;logo.gif&quot;, ALT=&gt;&quot;LOGO&quot;;
+    text $HTML &quot;My caption!&quot;;
+    tag  $HTML '_A';
+    text $HTML $a_lot_of_text;
+</PRE>
+
+<P>
+
+And this:
+
+
+<P>
+
+<PRE>
+    ### Approach #2...
+    output $HTML [A, HREF=&gt;&quot;$href&quot;], 
+	         [IMG, SRC=&gt;&quot;logo.gif&quot;, ALT=&gt;&quot;LOGO&quot;],
+		 &quot;My caption!&quot;,
+		 [_A];
+    output $HTML $a_lot_of_text;
+</PRE>
+
+<P>
+
+And this:
+
+
+<P>
+
+<PRE>
+    ### Approach #3...
+    $HTML -&gt; A(HREF=&gt;&quot;$href&quot;)
+	  -&gt; IMG(SRC=&gt;&quot;logo.gif&quot;, ALT=&gt;&quot;LOGO&quot;)
+	  -&gt; t(&quot;My caption!&quot;)
+	  -&gt; _A
+          -&gt; t($a_lot_of_text);
+</PRE>
+
+<P>
+
+Each run about 5x slower than this:
+
+
+<P>
+
+<PRE>
+    ### Approach #4...
+    print '&lt;A HREF=&quot;', html_escape($href), '&gt;',
+          '&lt;IMG SRC=&quot;logo.gif&quot; ALT=&quot;LOGO&quot;&gt;',
+  	  &quot;My caption!&quot;,
+          '&lt;/A&gt;';
+    print html_escape($a_lot_of_text);
+</PRE>
+
+<P>
+
+Of course, I'd much rather use any of first three <EM>(especially #3)</EM>
+ 
+if I had to get something done right in a hurry. Or did you not notice the
+typo in approach #4?  <CODE>;-)</CODE>
+
+
+
+
+<P>
+
+(BTW, thanks to Benchmark:: for allowing me to... er... benchmark stuff.)
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="why_in_the_world_did_i_write_thi">WHY IN THE WORLD DID I WRITE THIS?</A></H1>
+I was just mucking about with different ways of generating large HTML
+documents, seeing which ways I liked the most/least.
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="version">VERSION</A></H1>
+$Revision: 1.19 $
+
+
+<P>
+
+<P>
+<HR>
+<H1><A NAME="author">AUTHOR</A></H1>
+Eryq, <A
+HREF="MAILTO:eryq@rhine.gsfc.nasa.gov">eryq@rhine.gsfc.nasa.gov</A> .  
+
+
+<P>
+
+Enjoy.
+
+
+<P>
+
+    </BODY>
+
+    </HTML>

@@ -1,0 +1,86 @@
+NAME
+
+   HTML::Stream - HTML output stream class, and some markup utilities
+
+DESCRIPTION
+
+   This module provides you with an object-oriented (and subclassable)
+   way of outputting HTML.  Basically, you open up an "HTML stream" 
+   on an existing filehandle, and then do all of your output to the
+   HTML stream (you can intermix HTML-stream-output and ordinary-print-output,
+   if you like).
+
+   Here's small sample of the different ways you can use this module:
+
+       use HTML::Stream;
+       $HTML = new HTML::Stream \*STDOUT;
+      
+       # The vanilla interface...
+       tag  $HTML 'A', HREF=>"$href";
+       tag  $HTML 'IMG', SRC=>"logo.gif", ALT=>"LOGO";
+       text $HTML "My caption!";
+       tag  $HTML '_A';
+       text $HTML $a_lot_of_text;
+
+       # The chocolate interface (with whipped cream)...
+       $HTML -> A(HREF=>"$href")
+             -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
+             -> t("My caption!")
+             -> _A
+             -> t($a_lot_of_text);
+
+       # The strawberry interface...
+       output $HTML [A, HREF=>"$href"], 
+                    [IMG, SRC=>"logo.gif", ALT=>"LOGO"],
+                    "My caption!",
+                    [_A];
+       output $HTML $a_lot_of_text;
+
+MODULE SPECIFICATIONS
+
+    Module      DSLI    Description                               Info
+    ----------  ----    ----------------------------------------  ----
+    HTML::
+    ::Stream    adpO    OO "stream" for outputting HTML           ERYQ
+
+REQUIREMENTS
+
+    Perl5.002 or better (an eval bug in Perl5.001l will probably cause 
+    core dumps during AUTOLOAD, and I have no idea if 5.001m fixed it).
+
+INSTALLATION
+
+    Pretty simple:
+
+        1. Gunzip and de-tar the distribution, and cd to the top level.
+        2. Type:      perl Makefile.PL
+        3. Type:      make                    # this step is optional
+        4. Type:      make test               # this step is optional
+        5. Type:      make install
+
+    Other interesting targets in the Makefile are:
+
+        make config     # to check if the Makefile is up-to-date
+        make clean      # delete local temp files (Makefile gets renamed)
+        make realclean  # delete derived files (including ./blib)
+
+CHANGE LOG
+
+	1.19	Base release.
+
+TERMS AND CONDITIONS
+
+    Copyright (c) 1996 by Eryq.  All rights reserved.  This program is free
+    software; you can redistribute it and/or modify it under the same terms as
+    Perl itself. 
+
+    See the COPYING file in the distribution for details.
+
+AUTHOR
+
+    Eryq, eryq@rhine.gsfc.nasa.gov
+    15 July 1996
+
+
+
+
