@@ -6,9 +6,9 @@ DESCRIPTION
 
    This module provides you with an object-oriented (and subclassable)
    way of outputting HTML.  Basically, you open up an "HTML stream" 
-   on an existing filehandle, and then do all of your output to the
-   HTML stream (you can intermix HTML-stream-output and ordinary-print-output,
-   if you like).
+   on an existing filehandle (or any blessed object that has a print()
+   method), and then do all of your output to the HTML stream (you can 
+   intermix HTML-stream-output and ordinary-print-output, if you like).
 
    Here's small sample of the different ways you can use this module:
 
@@ -65,6 +65,8 @@ INSTALLATION
         make realclean  # delete derived files (including ./blib)
 
 CHANGE LOG
+
+	1.23	Added support for output to non-FileHandles
 
 	1.19	Base release.
 

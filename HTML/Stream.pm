@@ -285,6 +285,69 @@ By the way, the following are equivalent:
 No arguments to C<autoescape()> returns the current autoescape function.
 
 
+=head2 Outputting HTML to things besides filehandles
+
+As of Revision 1.21, you no longer need to supply C<new()> with a 
+filehandle: I<any object that responds to a print() method will do>.
+Of course, this includes B<blessed> FileHandles.
+
+If you supply a GLOB reference (like C<\*STDOUT>) or a string (like
+C<"Module::FH">), HTML::Stream will automatically create an invisible
+object for talking to that filehandle (I don't dare bless it into a
+FileHandle, since it'd get closed when the HTML::Stream is destroyed,
+and you might not like that).
+
+You say you want to print to a string?  For kicks and giggles, try this:
+
+    package StringHandle;
+    sub new {
+	my $self = '';
+	bless \$self, shift;
+    }
+    sub print {
+        my $self = shift;
+        $$self .= join('', @_);
+    }
+    
+  
+    package main;
+    use HTML::Stream;
+    
+    my $SH = new StringHandle;
+    my $HTML = new HTML::Stream $SH;
+    $HTML -> H1 -> "<Hello & welcome!>" -> _H1;
+    print "PRINTED STRING: ", $$SH, "\n";
+
+
+=head2 Subclassing
+
+This is where you can make your application-specific HTML-generating code
+I<much> easier to look at.  Consider this:
+
+    package MY::HTML;
+    @ISA = qw(HTML::Stream);
+     
+    sub Aside {
+	$_[0] -> FONT(SIZE=>-1) -> I;
+    }
+    sub _Aside {
+	$_[0] -> _I -> _FONT;
+    }
+
+Now, you can do this:
+
+    my $HTML = new MY::HTML \*STDOUT;
+    
+    $HTML -> Aside
+          -> t("Don't drink the milk, it's spoiled... pass it on...")
+          -> _Aside;
+
+If you're defining these markup-like, chocolate-interface-style functions,
+I recommend using mixed case with a leading capital.  You probably 
+shouldn't use all-uppercase, since that's what this module uses for
+real HTML tags.
+
+
 =head1 PERFORMANCE
 
 Slower than I'd like.  Both the output() method and the various "tag" 
@@ -340,7 +403,7 @@ HTML documents, seeing which ways I liked the most/least.
 
 =head1 VERSION
 
-$Revision: 1.19 $
+$Revision: 1.24 $
 
 
 =head1 AUTHOR
@@ -364,7 +427,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # Version...
-( $VERSION ) = '$Revision: 1.19 $ ' =~ /\$Revision:\s+([^\s]+)/;
+( $VERSION ) = '$Revision: 1.24 $ ' =~ /\$Revision:\s+([^\s]+)/;
          
 
 
@@ -531,15 +594,23 @@ my %AutoEscapeSubs =
 
 
 #------------------------------------------------------------
-# new [FILEHANDLE] 
+# new [PRINTABLE] 
 #------------------------------------------------------------
 # Create a new HTML output stream.
+# If no PRINTABLE is given, does a select() and uses that.
 
 sub new {
     my $class = shift;
-    my $fh = shift || select;      # defaults to current output stream
+    my $out = shift || select;      # defaults to current output stream
+
+    # If it looks like an unblessed filehandle, bless it:
+    if (!ref($out) || ref($out) eq 'GLOB') {
+	$out = new HTML::Stream::FileHandle $out;
+    }
+
+    # Create the object:
     my $self = { 
-	FH  => $fh,
+	OUT  => $out,
 	Esc => \&escape_all,
     };
     bless $self, $class;
@@ -592,7 +663,7 @@ sub autoescape {
 
 sub comment {
     my $self = shift;
-    print { $self->{FH} } '<!-- ', &{$self->{Esc}}(join('',@_)), ' -->';
+    $self->{OUT}->print('<!-- ', &{$self->{Esc}}(join('',@_)), ' -->');
     $self;
 }
 
@@ -607,7 +678,7 @@ sub comment {
 
 sub ent {
     my ($self, $entity) = @_;
-    print { $self->{FH} } "\&$entity;"; 
+    $self->{OUT}->print("\&$entity;");
     $self;
 }
 
@@ -622,7 +693,7 @@ sub ent {
 
 sub nl {
     my ($self, $count) = @_;
-    print { $self->{FH} } "\n" x (defined($count) ? $count : 1);
+    $self->{OUT}->print("\n" x (defined($count) ? $count : 1));
     $self;
 }
 
@@ -634,7 +705,7 @@ sub nl {
 
 sub tag {
     my $self = shift;
-    print { $self->{FH} } build_tag($self->{Esc}, \@_);
+    $self->{OUT}->print(build_tag($self->{Esc}, \@_));
     $self;
 }
 
@@ -645,7 +716,7 @@ sub tag {
 
 sub text {
     my $self = shift;
-    print { $self->{FH} } &{$self->{Esc}}(join('',@_));
+    $self->{OUT}->print(&{$self->{Esc}}(join('',@_)));
     $self;
 }
 
@@ -670,14 +741,14 @@ sub text {
 
 sub output {
     my $self = shift;
-    my $fh = $self->{FH};
+    my $out = $self->{OUT};
     my $esc = $self->{Esc};
     foreach (@_) {
 	if (ref($_) eq 'ARRAY') {    # E.g., $_ is [A, HREF=>$url]
-	    print $fh &build_tag($esc, $_);
+	    $out->print(&build_tag($esc, $_));
 	}
 	elsif (!ref($_)) {           # E.g., $_ is "Some text"
-	    print $fh (&$esc($_));
+	    $out->print(&$esc($_));
 	}
 	else {
 	    confess "bad argument to output: $_";
@@ -807,7 +878,7 @@ sub AUTOLOAD {
 	    eval <<EOF;
             sub HTML::Stream::$funcname { 
 		my \$self = shift; 
-                print { \$self->{FH} } $BEFORE html_tag('$tag',\@_) $AFTER;
+                \$self->{OUT}->print($BEFORE html_tag('$tag',\@_) $AFTER);
                 \$self;
             }
 EOF
@@ -818,7 +889,7 @@ EOF
             my $AFTER  = ($Tags{$tag} & 8 ? ',"\n"' : ''); 
 	    eval <<EOF;
             sub HTML::Stream::$funcname { 
-                print { \$_[0]->{FH} } $BEFORE "</$tag>" $AFTER;
+                \$_[0]->{OUT}->print($BEFORE "</$tag>" $AFTER);
                 \$_[0];
             }
 EOF
@@ -836,64 +907,23 @@ EOF
     goto &$AUTOLOAD;
 }
 
-#------------------------------------------------------------
-# Execute simple test if run as a script...
-#------------------------------------------------------------
-{ 
-  package main; no strict;
-  $INC{'HTML/Stream.pm'} = 1;
-  eval join('',<main::DATA>) || die "$@ $main::DATA" unless caller();
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+# A small, private package for turning FileHandles into safe printables:
+
+package HTML::Stream::FileHandle;
+no strict 'refs';
+sub new {
+    my ($class, $raw) = @_;
+    bless \$raw, $class;
 }
-1;           # end the module
-__END__
-
-
-use HTML::Stream;
-
-$HTML = new HTML::Stream \*STDOUT;
-my $alt = 'Lo"go';
-my $href = 'home.html';
-my $a_lot_of_text = 'Copyright (c) 1996 by <me> & <you>!';
-
-### Example:
-$HTML -> HTML 
-      -> HEAD  
-      -> TITLE -> t("Hello!") -> _TITLE 
-      -> _HEAD
-      -> BODY(BGCOLOR=>'#808080');
-
-
-### Approach #1...
-$HTML -> tag('H1') -> text("Approach 1") -> tag('/H1');
-tag  $HTML 'P';
-tag  $HTML 'A', HREF=>"$href";
-tag  $HTML 'IMG', SRC=>"logo.gif", ALT=>$alt;
-text $HTML "My caption!";
-tag  $HTML '_A';
-text $HTML $a_lot_of_text;
-$HTML->nl(2);
-    
-### Approach #2...
-output $HTML [H1], "Approach 2", [_H1], 
-             [P],
-             [A, HREF=>"$href"], 
-             [IMG, SRC=>"logo.gif", ALT=>$alt],
-             "My caption!",
-             [_A];
-output $HTML $a_lot_of_text;
-$HTML->nl(2);
-
-### Approach #3...
-$HTML -> H3 -> t("Approach 3") -> _H3
-      -> P
-      -> A(HREF=>"$href")
-      -> IMG(SRC=>"logo.gif", ALT=>$alt)
-      -> t("My caption!")
-      -> _A
-      -> t($a_lot_of_text);
-$HTML->nl(2);
-
+sub print {
+    my $self = shift;
+    print { $$self } @_;
+}
 
 #------------------------------------------------------------
 1;
- 
+

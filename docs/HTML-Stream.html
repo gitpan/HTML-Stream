@@ -19,6 +19,8 @@
 		<LI><A HREF="#newlines">Newlines</A>
 		<LI><A HREF="#entities">Entities</A>
 		<LI><A HREF="#changing_the_way_text_is_escaped">Changing the way text is escaped</A>
+		<LI><A HREF="#outputting_html_to_things_beside">Outputting HTML to things besides filehandles</A>
+		<LI><A HREF="#subclassing">Subclassing</A>
 	</UL>
 	<LI><A HREF="#performance">PERFORMANCE</A>
 	<LI><A HREF="#why_in_the_world_did_i_write_thi">WHY IN THE WORLD DID I WRITE THIS?</A>
@@ -519,6 +521,98 @@ No arguments to <CODE>autoescape()</CODE> returns the current autoescape functio
 
 <P>
 <HR>
+<H2><A NAME="outputting_html_to_things_beside">Outputting HTML to things besides filehandles</A></H2>
+As of Revision 1.21, you no longer need to supply <CODE>new()</CODE> with a filehandle: <EM>any object that responds to a print() method will do</EM>
+. Of course, this includes <STRONG>blessed</STRONG>
+ FileHandles.
+
+
+<P>
+
+If you supply a GLOB reference (like <CODE>\*STDOUT</CODE>) or a string (like
+<CODE>"Module::FH"</CODE>), HTML::Stream will automatically create an invisible object for talking
+to that filehandle (I don't dare bless it into a FileHandle, since it'd get
+closed when the HTML::Stream is destroyed, and you might not like that).
+
+
+<P>
+
+You say you want to print to a string? For kicks and giggles, try this:
+
+
+<P>
+
+<PRE>
+    package StringHandle;
+    sub new {
+	my $self = '';
+	bless \$self, shift;
+    }
+    sub print {
+        my $self = shift;
+        $$self .= join('', @_);
+    }
+    
+  
+    package main;
+    use HTML::Stream;
+    
+    my $SH = new StringHandle;
+    my $HTML = new HTML::Stream $SH;
+    $HTML -&gt; H1 -&gt; &quot;&lt;Hello &amp; welcome!&gt;&quot; -&gt; _H1;
+    print &quot;PRINTED STRING: &quot;, $$SH, &quot;\n&quot;;
+</PRE>
+
+<P>
+
+<P>
+<HR>
+<H2><A NAME="subclassing">Subclassing</A></H2>
+This is where you can make your application-specific HTML-generating code
+<EM>much</EM>
+ easier to look at. Consider this:
+
+
+<P>
+
+<PRE>
+    package MY::HTML;
+    @ISA = qw(HTML::Stream);
+     
+    sub Aside {
+	$_[0] -&gt; FONT(SIZE=&gt;-1) -&gt; I;
+    }
+    sub _Aside {
+	$_[0] -&gt; _I -&gt; _FONT;
+    }
+</PRE>
+
+<P>
+
+Now, you can do this:
+
+
+<P>
+
+<PRE>
+    my $HTML = new MY::HTML \*STDOUT;
+    
+    $HTML -&gt; Aside
+          -&gt; t(&quot;Don't drink the milk, it's spoiled... pass it on...&quot;)
+          -&gt; _Aside;
+</PRE>
+
+<P>
+
+If you're defining these markup-like, chocolate-interface-style functions,
+I recommend using mixed case with a leading capital. You probably shouldn't
+use all-uppercase, since that's what this module uses for real HTML tags.
+
+
+<P>
+
+<P>
+<HR>
 <H1><A NAME="performance">PERFORMANCE</A></H1>
 Slower than I'd like. Both the <CODE>output()</CODE> method and the various
 ``tag'' methods seem to run about 5 times slower than the old
@@ -613,7 +707,7 @@ documents, seeing which ways I liked the most/least.
 <P>
 <HR>
 <H1><A NAME="version">VERSION</A></H1>
-$Revision: 1.19 $
+$Revision: 1.24 $
 
 
 <P>
