@@ -1,3 +1,4 @@
+Changes
 COPYING
 MANIFEST
 Makefile.PL
@@ -28,3 +29,7 @@ lib/HTML/Stream.pm
 testin/README
 testin/test.html
 testin/test2.html
+t/01-HTML-Stream.t
+t/02-OO_Tests.t
+t/03-Functional_Tests.t
+META.yml                                 Module meta-data (added by MakeMaker)

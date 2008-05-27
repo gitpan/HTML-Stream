@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.55 $, 10;
+$VERSION = substr q$Revision: 1.56$, 10;
 
 
 
@@ -1095,6 +1095,7 @@ my $TSOLO  = 0 | 2 | 0 | 0;
      NOBR    => $TFONT,
      NOEMBED => $TBOTH,
      NOFRAME => $TBOTH,
+    NOFRAMES => $TBOTH,
     NOSCRIPT => $TBOTH,
      OBJECT  => 0,
      OL      => $TLIST, 
@@ -1498,12 +1499,20 @@ the typo in approach #4?  C<;-)>
 
 =head1 VERSION
 
-$Id: Stream.pm,v 1.55 2003/10/28 dstaal Exp $
+$Id: Stream.pm,v 1.56 2008/05/27 dstaal Exp $
 
 
 =head1 CHANGE LOG
 
 =over 4
+
+=item Version 1.56   (2008/05/27)
+
+Added the start of a testing suite.  In the process, I found an error:
+HTML defines the tag 'NOFRAMES', not 'NOFRAME'.  Both are currently in
+the tag list, but consider 'NOFRAME' depriciated.
+
+The test suite requires Test::More and Test::Output.
 
 =item Version 1.55   (2003/10/28)
 
@@ -1518,7 +1527,6 @@ currently included.)
 
 The terms-of-use have been placed in the distribution file "COPYING".  
 Also, small documentation tweaks were made.
-
 
 =item Version 1.51   (2001/08/16)
 
