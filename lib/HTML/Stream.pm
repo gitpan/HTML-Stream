@@ -431,7 +431,7 @@ use vars qw(@ISA %EXPORT_TAGS $AUTOLOAD $DASH_TO_SLASH $VERSION %Tags);
 Exporter::export_ok_tags('funcs');
 
 # The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.58$, 10;
+$VERSION = substr q$Revision: 1.59$, 10;
 
 
 
@@ -1499,11 +1499,15 @@ the typo in approach #4?  C<;-)>
 
 =head1 VERSION
 
-$Id: Stream.pm,v 1.57 2008/05/28 dstaal Exp $
+$Id: Stream.pm,v 1.59 2008/06/01 dstaal Exp $
 
 =head1 CHANGE LOG
 
 =over 4
+
+=item Version 1.59   (2008/06/01)
+
+Better tests, better Meta.yml.
 
 =item Version 1.58   (2008/05/28)
 

@@ -1,6 +1,5 @@
 ﻿
-use Test::More tests => 19;
-use Test::Output;
+use Test::More tests=>19;
 use HTML::Stream;
 
 
@@ -41,28 +40,34 @@ push @historic_tags, 'DSTAAL';
 is_deeply (\@tags, \@historic_tags, "Tags List");
 
 
-# Check that some of these tags actually work as expected...
-stdout_is( sub { $HTML->ABBR }, "<ABBR>" );
-stdout_is( sub { $HTML->ABBR->_ABBR }, "<ABBR></ABBR>" );
-stdout_is( sub { $HTML->A(HREF=>'mailto:DSTAAL@USA.NET') }, '<A HREF="mailto:DSTAAL@USA.NET">' );
-stdout_is( sub { $HTML->ADDRESS->_ADDRESS }, "<ADDRESS>\n</ADDRESS>\n" );
-stdout_is( sub { $HTML->AREA->_AREA }, "<AREA></AREA>\n" );
-stdout_is( sub { $HTML->BR->_BR }, "<BR>\n</BR>" );
-stdout_is( sub { $HTML->BUTTON->_BUTTON }, "\n<BUTTON></BUTTON>" );
-stdout_is( sub { $HTML->H1->_H1 }, "<H1></H1>\n" );
-stdout_is( sub { $HTML->TR(NOWRAP=>undef)->_TR }, "\n<TR NOWRAP></TR>\n" );
+# Skip tests if we can't run them.
+SKIP : {
+	skip 'Test::Output is needed for OO tests to run.', 16
+		unless eval { require 'Test::Output' };
 
-# Check Escaping
-# (I really should be through about this, but these are the 
-# HTML _required_ escapes checked at least.)
-stdout_is( sub { $HTML->text("&") }, "&amp;" );
-stdout_is( sub { $HTML->t("<") }, "&lt;" );
-
-#Check a couple of the other methods...
-
-# 'Newline' is up first.
-stdout_is( sub { $HTML->nl }, "\n" );
-stdout_is( sub { $HTML->nl(3) }, "\n\n\n" );
-stdout_is( sub { $HTML->nl(0) }, "" );
-stdout_is( sub { $HTML->nl(-1) }, "" );
-stdout_is( sub { $HTML->nl("a") }, "" );
+	# Check that some of these tags actually work as expected...
+	stdout_is( sub { $HTML->ABBR }, "<ABBR>" );
+	stdout_is( sub { $HTML->ABBR->_ABBR }, "<ABBR></ABBR>" );
+	stdout_is( sub { $HTML->A(HREF=>'mailto:DSTAAL@USA.NET') }, '<A HREF="mailto:DSTAAL@USA.NET">' );
+	stdout_is( sub { $HTML->ADDRESS->_ADDRESS }, "<ADDRESS>\n</ADDRESS>\n" );
+	stdout_is( sub { $HTML->AREA->_AREA }, "<AREA></AREA>\n" );
+	stdout_is( sub { $HTML->BR->_BR }, "<BR>\n</BR>" );
+	stdout_is( sub { $HTML->BUTTON->_BUTTON }, "\n<BUTTON></BUTTON>" );
+	stdout_is( sub { $HTML->H1->_H1 }, "<H1></H1>\n" );
+	stdout_is( sub { $HTML->TR(NOWRAP=>undef)->_TR }, "\n<TR NOWRAP></TR>\n" );
+	
+	# Check Escaping
+	# (I really should be through about this, but these are the 
+	# HTML _required_ escapes checked at least.)
+	stdout_is( sub { $HTML->text("&") }, "&amp;" );
+	stdout_is( sub { $HTML->t("<") }, "&lt;" );
+	
+	#Check a couple of the other methods...
+	
+	# 'Newline' is up first.
+	stdout_is( sub { $HTML->nl }, "\n" );
+	stdout_is( sub { $HTML->nl(3) }, "\n\n\n" );
+	stdout_is( sub { $HTML->nl(0) }, "" );
+	stdout_is( sub { $HTML->nl(-1) }, "" );
+	stdout_is( sub { $HTML->nl("a") }, "" );
+}
