@@ -5,28 +5,28 @@ SYNOPSIS
     Here's small sample of some of the non-OO ways you can use this module:
 
           use HTML::Stream qw(:funcs);
-      
-          print html_tag('A', HREF=>$link);     
-          print html_escape("<<Hello & welcome!>>");      
+          
+      print html_tag('A', HREF=>$link);     
+          print html_escape("<<Hello & welcome!>>");
 
     And some of the OO ways as well:
 
           use HTML::Stream;
           $HTML = new HTML::Stream \*STDOUT;
-      
-          # The vanilla interface...
+          
+      # The vanilla interface...
           $HTML->tag('A', HREF=>"$href");
           $HTML->tag('IMG', SRC=>"logo.gif", ALT=>"LOGO");
           $HTML->text($copyright);
           $HTML->tag('_A');
-      
-          # The chocolate interface...
+          
+      # The chocolate interface...
           $HTML -> A(HREF=>"$href");
           $HTML -> IMG(SRC=>"logo.gif", ALT=>"LOGO");
           $HTML -> t($caption);
           $HTML -> _A;
-       
-          # The chocolate interface, with whipped cream...
+           
+      # The chocolate interface, with whipped cream...
           $HTML -> A(HREF=>"$href")
                 -> IMG(SRC=>"logo.gif", ALT=>"LOGO")
                 -> t($caption)
@@ -55,8 +55,8 @@ INTRODUCTION (the Neapolitan dessert special)
     tags, like this:
 
         use HTML::Stream qw(:funcs);        # imports functions from @EXPORT_OK
-    
-        print html_tag(A, HREF=>$url);
+        
+    print html_tag(A, HREF=>$url);
         print '&copy; 1996 by', html_escape($myname), '!';
         print html_tag('/A');
 
@@ -69,23 +69,23 @@ INTRODUCTION (the Neapolitan dessert special)
     string!):
 
         print html_tag(TD, NOWRAP=>undef, ALIGN=>'LEFT');
-    
-             <TD NOWRAP ALIGN=LEFT>
-    
-        print html_tag(IMG, SRC=>'logo.gif', ALT=>'');
-    
-             <IMG SRC="logo.gif" ALT="">
+        
+         <TD NOWRAP ALIGN=LEFT>
+        
+    print html_tag(IMG, SRC=>'logo.gif', ALT=>'');
+        
+         <IMG SRC="logo.gif" ALT="">
 
     There are also some routines for reversing the process, like:
 
         $text = "This <i>isn't</i> &quot;fun&quot;...";    
         print html_unmarkup($text);
-       
-             This isn't &quot;fun&quot;...
-      
-        print html_unescape($text);
-       
-             This isn't "fun"...
+           
+         This isn't &quot;fun&quot;...
+          
+    print html_unescape($text);
+           
+         This isn't "fun"...
 
     *Yeah, yeah, yeah*, I hear you cry. *We've seen this stuff before.* But
     wait! There's more...
@@ -98,8 +98,8 @@ INTRODUCTION (the Neapolitan dessert special)
 
         use HTML::Stream;
         $HTML = new HTML::Stream \*STDOUT;
-    
-        $HTML->tag(A, HREF=>$url);
+        
+    $HTML->tag(A, HREF=>$url);
         $HTML->ent('copy');
         $HTML->text(" 1996 by $myname!");
         $HTML->tag(_A);
@@ -107,11 +107,11 @@ INTRODUCTION (the Neapolitan dessert special)
     As you've probably guessed:
 
         text()   Outputs some text, which will be HTML-escaped.
-    
-        tag()    Outputs an ordinary tag, like <A>, possibly with parameters.
+        
+    tag()    Outputs an ordinary tag, like <A>, possibly with parameters.
                  The parameters will all be HTML-escaped automatically.
-     
-        ent()    Outputs an HTML entity, like the &copy; or &lt; .
+         
+    ent()    Outputs an HTML entity, like the &copy; or &lt; .
                  You mostly don't need to use it; you can often just put the 
                  Latin-1 representation of the character in the text().
 
@@ -296,15 +296,15 @@ ADVANCED TOPICS
             $text =~ s/\\,(c)/\&$1cedil;/ig;   # \,c becomes a cedilla
             $text;
         }
-    
-        # Start using my auto-escape:
+        
+    # Start using my auto-escape:
         my $old_esc = $HTML->auto_escape(\&my_auto_escape);  
-    
-        # Output some stuff:
+        
+    # Output some stuff:
         $HTML-> IMG(SRC=>'logo.gif', ALT=>'Fran\,cois, Inc');
         output $HTML 'Copyright (C) 1996 by Fran\,cois, Inc.!';
-    
-        # Stop using my auto-escape:
+        
+    # Stop using my auto-escape:
         $HTML->auto_escape($old_esc);
 
     If you find yourself in a situation where you're doing this a lot, a
@@ -334,11 +334,12 @@ ADVANCED TOPICS
             my $self = shift;
             $$self .= join('', @_);
         }
-    
-        package main;
+        
+  
+    package main;
         use HTML::Stream;
-    
-        my $SH = new StringHandle;
+        
+    my $SH = new StringHandle;
         my $HTML = new HTML::Stream $SH;
         $HTML -> H1 -> t("Hello & <<welcome>>!") -> _H1;
         print "PRINTED STRING: ", $$SH, "\n";
@@ -349,8 +350,8 @@ ADVANCED TOPICS
 
         package MY::HTML;
         @ISA = qw(HTML::Stream);
-     
-        sub Aside {
+         
+    sub Aside {
             $_[0] -> FONT(SIZE=>-1) -> I;
         }
         sub _Aside {
@@ -360,8 +361,8 @@ ADVANCED TOPICS
     Now, you can do this:
 
         my $HTML = new MY::HTML \*STDOUT;
-    
-        $HTML -> Aside
+        
+    $HTML -> Aside
               -> t("Don't drink the milk, it's spoiled... pass it on...")
               -> _Aside;
 
@@ -535,7 +536,7 @@ PUBLIC INTERFACE
         HTML (if it isn't already). For example, this...
 
              # Make sure methods MARQUEE and _MARQUEE are compiled on demand:
-             HTML::Stream->accept_tag('MARQUEE'); 
+             HTML::Stream->accept_tag('MARQUEE');
 
         ...gives the Chocolate Interface permission to create (via AUTOLOAD)
         definitions for the MARQUEE and _MARQUEE methods, so you can then
@@ -625,7 +626,7 @@ PUBLIC INTERFACE
                  0x01    newline before <TAG>         .<TAG>.     .</TAG>.    
                  0x02    newline after <TAG>          |     |     |      |
                  0x04    newline before </TAG>        1     2     4      8
-                 0x08    newline after </TAG>    
+                 0x08    newline after </TAG>
 
             Hence, to output BLINK environments which are preceded/followed
             by newlines:
@@ -648,8 +649,8 @@ SUBCLASSES
     So using HTML::Stream::Latin1 like this:
 
         use HTML::Stream;
-    
-        $HTML = new HTML::Stream::Latin1 \*STDOUT;
+        
+    $HTML = new HTML::Stream::Latin1 \*STDOUT;
         output $HTML "\253A right angle is 90\260, \277No?\273\n";
 
     Prints this:
@@ -713,9 +714,13 @@ PERFORMANCE
     stuff.)
 
 VERSION
-    $Id: Stream.pm,v 1.59 2008/06/01 dstaal Exp $
+    $Id: Stream.pm,v 1.60 2008/08/06 dstaal Exp $
 
 CHANGE LOG
+    Version 1.60 (2008/08/06)
+        Fixed up the tests some more, updated changelog. (Which I'd
+        forgotten about...)
+
     Version 1.59 (2008/06/01)
         Better tests, better Meta.yml.
 

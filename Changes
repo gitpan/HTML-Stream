@@ -1,4 +1,25 @@
-﻿CHANGE LOG
+CHANGE LOG
+    Version 1.60 (2008/08/06)
+        Fixed up the tests some more, updated changelog. (Which I'd
+        forgotten about...)
+
+    Version 1.59 (2008/06/01)
+        Better tests, better Meta.yml.
+
+    Version 1.58 (2008/05/28)
+        Another attempt at cleanup, as well expanding the Meta.yml file.
+
+    Version 1.57 (2008/05/28)
+        Cleaned up the Mac-specific files that were getting created in the
+        archive.
+
+    Version 1.56 (2008/05/27)
+        Added the start of a testing suite. In the process, I found an
+        error: HTML defines the tag 'NOFRAMES', not 'NOFRAME'. Both are
+        currently in the tag list, but consider 'NOFRAME' depriciated.
+
+        The test suite requires Test::More and Test::Output.
+
     Version 1.55 (2003/10/28)
         New maintainer: Daniel T. Staal. No major changes in the code,
         except to complete the tag list to HTML 4.01 specifications. (With

@@ -1,5 +1,6 @@
-﻿
-use Test::More tests=>19;
+
+#use Test::More tests=>19;
+use Test::More qw(no_plan);
 use HTML::Stream;
 
 
@@ -41,9 +42,10 @@ is_deeply (\@tags, \@historic_tags, "Tags List");
 
 
 # Skip tests if we can't run them.
-SKIP : {
-	skip 'Test::Output is needed for OO tests to run.', 16
-		unless eval { require 'Test::Output' };
+SKIP: {
+ 	eval { require Test::Output };
+	skip "Test::Output is needed for OO tests to run.", 16 if $@;
+	Test::Output->import();
 
 	# Check that some of these tags actually work as expected...
 	stdout_is( sub { $HTML->ABBR }, "<ABBR>" );
@@ -69,5 +71,5 @@ SKIP : {
 	stdout_is( sub { $HTML->nl(3) }, "\n\n\n" );
 	stdout_is( sub { $HTML->nl(0) }, "" );
 	stdout_is( sub { $HTML->nl(-1) }, "" );
-	stdout_is( sub { $HTML->nl("a") }, "" );
+	stdout_is( sub { $HTML->nl("a") }, "" );  # This fails intentionally.
 }
